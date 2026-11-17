@@ -1,0 +1,133 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>讀菇山行 The Poisonous Trail</title>
+<meta name="description" content="沿著一棵大樹，由山腳溪谷往上走到 3,000 公尺雪線，認識沿路生長的毒菇與牠們的環境。">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&family=Noto+Serif+TC:wght@600;900&family=IBM+Plex+Mono:wght@400;500&family=Cormorant+Garamond:ital,wght@1,500;1,600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/site.css?v=25">
+<link rel="icon" href="img/logo-ink.png">
+</head>
+<body class="is-loading" data-filter="all">
+
+<div id="sky" aria-hidden="true"></div>
+
+<header class="top">
+  <a class="top-logo" href="#" data-go="0" aria-label="回到山腳"><img src="img/logo-white.png" alt="讀菇"></a>
+  <div class="top-title"><b>讀菇山行</b><span>The Poisonous Trail</span></div>
+  <nav class="top-nav">
+    <button class="tb" id="btnHint" title="閃一下目前畫面中的菇點"><span class="tb-ico">✦</span><span class="tb-txt">找菇</span></button>
+    <button class="tb" id="btnDex"><span class="tb-ico">◉</span><span class="tb-txt">圖鑑</span><span class="tb-count" id="foundCount">0/0</span></button>
+    <a class="tb tb-ver" href="full.html" title="切換到模擬全部 21 層的完整版（含尚未繪製的示意畫面）"><span class="tb-ico">▤</span><span class="tb-txt">完整 21 層版</span></a>
+    <button class="tb tb-wheel" id="btnWheel" aria-pressed="false" title="滾輪每滾一下移動一層；開啟後改成往下滾＝往上爬"><span class="tb-ico">⇅</span><span class="tb-txt">反向滾動</span></button>
+  </nav>
+</header>
+
+<nav class="filter" aria-label="場景篩選">
+  <span class="ft-k">場景</span>
+  <button data-filter="all" class="on">全部</button>
+  <button data-filter="mush" style="--fc:#ff4f74">菇類</button>
+  <button data-filter="plant" style="--fc:#a9c94a">植物</button>
+  <button data-filter="animal" style="--fc:#e7a64a">動物</button>
+  <button data-filter="land" style="--fc:#8fb3d9">地景</button>
+</nav>
+
+<aside class="rail" id="rail" aria-label="海拔">
+  <div class="rail-read">
+    <div class="rail-num"><span id="altNum">0</span><small>m</small></div>
+    <div class="rail-sub" id="altSub">山腳・菌絲層</div>
+  </div>
+  <div class="rail-scale" id="railScale">
+    <div class="rail-fill" id="railFill"></div>
+    <div class="rail-mark" id="railMark"><i></i></div>
+  </div>
+  <button class="rail-toggle" id="railToggle" aria-pressed="false" title="顯示／收合所有高度說明"><span class="rt-ico">☰</span><span class="rt-txt">展開高度說明</span></button>
+</aside>
+
+<aside class="panel" id="panel" aria-live="polite"></aside>
+
+<main id="trail">
+  <section class="summit" id="summit">
+    <div class="summit-in">
+      <p class="kicker">STAGE 21 ／ 3,000 m</p>
+      <h2 class="summit-h">你登頂了</h2>
+      <p class="summit-p">從溪谷一路往上，氣溫下降了約 18°C，空氣中的氧氣只剩海平面的七成。<br>沿途你發現了 <b id="sumFound">0</b> 種菇類。</p>
+      <div class="summit-dex" id="summitDex"></div>
+      <p class="hand-note"><span class="hn-ico" aria-hidden="true">✎</span>本網頁所有插圖皆為本專題組員手繪</p>
+      <div class="summit-cta">
+        <button class="btn btn-light" data-go="0">↓ 回到山腳</button>
+        <button class="btn btn-ghost" data-open-dex>打開圖鑑</button>
+      </div>
+    </div>
+    <svg class="summit-snow" viewBox="0 0 1000 160" preserveAspectRatio="none" aria-hidden="true">
+      <path d="M0 90 C120 50 210 110 330 70 S560 40 660 80 S860 50 1000 70 L1000 160 L0 160Z" fill="#eef3f8"/>
+      <path d="M0 120 C160 90 260 130 420 105 S700 90 820 115 S940 100 1000 108 L1000 160 L0 160Z" fill="#fff"/>
+    </svg>
+  </section>
+
+  <div class="column" id="column"></div>
+
+  <section class="ground" id="ground">
+    <div class="hero" id="hero" aria-hidden="true">
+      <div class="hero-glow"></div>
+      <canvas class="hero-spores" id="sporeCv"></canvas>
+      <div class="hero-stage" id="heroStage">
+        <svg class="hero-net" id="heroNet"></svg>
+        <img class="hero-disc" src="img/gill/muscaria-light.webp" alt="" draggable="false">
+        <div class="hero-ring" id="heroRing"></div>
+      </div>
+      <div class="hero-cue"><i></i><span>往上爬</span></div>
+    </div>
+    <div class="ground-in">
+      <p class="hero-eyebrow"><span>THE POISONOUS TRAIL</span><b data-ver-label>插畫版 ・ 已完成 11 / 21 層</b></p>
+      <img class="ground-logo" src="img/logo-white.png" alt="讀菇">
+      <p class="ground-sub">山行</p>
+      <p class="ground-p">一棵大樹就是一座山。從溪谷出發，沿著樹幹往上走到 3,000 公尺雪線，<br>每往上一層，氣候、植物與動物都會改變，菇也跟著不同。</p>
+      <ul class="ground-stats">
+        <li><b data-count="3000" data-prefix="0–">0–3,000</b><span>公尺海拔</span></li>
+        <li><b data-count="21" data-count-layers>21</b><span>個生態層</span></li>
+        <li><b id="statMush" data-count="0">0</b><span>種菇類</span></li>
+      </ul>
+      <button class="btn btn-go" data-go="1"><span class="arrow">↑</span> 向上出發</button>
+      <p class="hand-note"><span class="hn-ico" aria-hidden="true">✎</span>本網頁所有插圖皆為本專題組員手繪</p>
+    </div>
+  </section>
+</main>
+
+<div id="focus" aria-hidden="true"></div>
+<div id="night" aria-hidden="true"></div>
+<div id="fog" aria-hidden="true"><i></i><i></i><i></i></div>
+<div id="frost" aria-hidden="true"></div>
+<canvas id="fx" aria-hidden="true"></canvas>
+
+<div class="banner" id="banner" aria-hidden="true"></div>
+<div class="toast" id="toast" role="status"></div>
+
+<div class="scrim" id="scrim"></div>
+<article class="drawer" id="drawer" role="dialog" aria-modal="true" aria-labelledby="dwName" hidden></article>
+
+<div class="book-lb" id="bookLb" role="dialog" aria-modal="true" aria-label="書頁圖解" hidden>
+  <figure><img alt=""><figcaption class="bl-cap"></figcaption></figure>
+  <button class="x" data-close-book aria-label="關閉">×</button>
+</div>
+
+<div class="dex" id="dex" role="dialog" aria-modal="true" aria-label="菇類圖鑑" hidden>
+  <div class="dex-in">
+    <header class="dex-head">
+      <div><p class="kicker">讀菇山行 ／ FIELD INDEX</p><h2>沿路菇類圖鑑</h2></div>
+      <button class="x" data-close-dex aria-label="關閉">×</button>
+    </header>
+    <div class="dex-grid" id="dexGrid"></div>
+    <p class="dex-note">本網頁所有插圖皆為本專題組員手繪。內容為專題示意資料，菇類辨識請以專業圖鑑為準。<b>只觀察，不採食。</b></p>
+  </div>
+</div>
+
+<script src="js/data.js?v=12"></script>
+<script src="js/mush-geom.js?v=5"></script>
+<script src="js/art.js?v=2"></script>
+<script src="js/app.js?v=22"></script>
+</body>
+</html>

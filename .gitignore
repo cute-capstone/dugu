@@ -1,0 +1,8 @@
+# 不上傳到 GitHub
+.DS_Store
+_tools/
+*.psd
+*.ai
+*.zip
+*.rar
+*.mov
