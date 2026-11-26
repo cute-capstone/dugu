@@ -70,13 +70,16 @@ window.DUGU = (function () {
     if (GILLS.has(m.id)) m.gill = `${T}img/gill/${m.id}.webp`;
     if (BOOKPAGE[m.id]) { m.page = BOOKPAGE[m.id]; m.plate = `${T}img/book/${m.id}.webp`; }
   });
-  // 三冊圖鑑：依海拔分冊
+  // 三冊圖鑑：依海拔分冊（封面＝03/封面/02_B版 黑卡紙鐳雕版，海拔與封面一致；中高海拔公尺數待組員確認）
   const BOOKS = [
-    { key: 'low', title: '尋野', en: 'Into the Wild', range: '0–1,000 m', sub: '低海拔', color: '#7f9a4a',
+    { key: 'low', title: '尋野', en: 'Into the Wild', range: '0–1,200 m', sub: '低海拔', color: '#7f9a4a',
+      place: '溪澗・草地・平原的毒菇', cover: 'img/cover/cover-low.webp',
       text: '溪澗、竹林、牧場與城市草地。最貼近日常的一冊——公園的綠褶菇、盆栽裡的純黃白鬼傘都在這裡。' },
-    { key: 'mid', title: '林間', en: 'Among the Trees', range: '1,000–2,000 m', sub: '中海拔', color: '#3f6b4f',
+    { key: 'mid', title: '林間', en: 'Among the Trees', range: '1,200–2,500 m', sub: '中海拔', color: '#3f6b4f',
+      place: '闊葉林・霧林・倒木間的毒菇', cover: 'img/cover/cover-mid.webp',
       text: '闊葉林與霧林帶。倒木上的月夜茸、落葉堆裡的光澤粉褶菌，躲在潮濕陰暗的林床。' },
-    { key: 'high', title: '登峰', en: 'To the Summit', range: '2,000–3,000 m', sub: '高海拔', color: '#3d4f63',
+    { key: 'high', title: '登峰', en: 'To the Summit', range: '2,500–3,952 m', sub: '高海拔', color: '#3d4f63',
+      place: '針葉林・高山草原・稜線的毒菇', cover: 'img/cover/cover-high.webp',
       text: '針葉林到雪線稜頂。白得發亮的白毒鵝膏、紅白相間的毒蠅鵝膏菌，是登山客最該認得的菇。' }
   ];
   // 卷軸插畫（已完成的頁）

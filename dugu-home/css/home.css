@@ -518,3 +518,18 @@ body { background: var(--paper); color: var(--ink); }
 .grass-row::after { content: ''; position: absolute; left: 0; right: 0; bottom: 0; height: 16px; background: var(--sil); }
 .grass-row img { position: relative; flex: 0 0 auto; width: auto; margin-right: -38px; filter: brightness(0) drop-shadow(0 -300px 0 var(--sil)); transform: translateY(300px) scaleX(var(--fx, 1)); }
 .foot .grass-row { top: -54px; }
+
+/* ===== v5（2026-11-26）三冊改用黑卡紙鐳雕封面（03/封面/02_B版）===== */
+.shelf { gap: clamp(16px, 2.4vw, 32px); }
+.book-cover { aspect-ratio: 1600 / 775; padding: 0; background: #0b0908; border-radius: 6px; transform-origin: 50% 100%;
+  box-shadow: 0 16px 34px rgba(35, 27, 20, .28), 0 2px 0 rgba(255, 255, 255, .04) inset; }
+.book-cover img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform 1.2s var(--ease); }
+.book:hover .book-cover, .book.on .book-cover { transform: translateY(-6px); box-shadow: 0 26px 44px rgba(35, 27, 20, .34); }
+.book:hover .book-cover img { transform: scale(1.04); }
+.book.on .book-cover { outline: 2px solid var(--ink); outline-offset: 6px; }
+.book-meta span { margin-left: 10px; }
+.book-meta i { display: block; font-style: normal; font-size: 13px; letter-spacing: .12em; color: var(--poison); margin-top: 6px; }
+@media (max-width: 760px) { .shelf { max-width: 520px; } }
+.bc-band { position: absolute; left: 10px; top: 10px; z-index: 2; display: inline-flex; align-items: center; gap: 8px; padding: 5px 12px 5px 6px; border-radius: 99px;
+  background: rgba(11, 9, 8, .82); color: #f4ecdc; font-size: 13px; font-weight: 700; letter-spacing: .16em; border: 1px solid rgba(244, 236, 220, .35); backdrop-filter: blur(4px); }
+.bc-band em { font-style: normal; font-family: var(--mono); font-size: 11px; letter-spacing: 0; background: var(--bc); color: #fff; border-radius: 99px; padding: 2px 7px; }

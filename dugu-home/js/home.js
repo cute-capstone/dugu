@@ -174,11 +174,10 @@
   win.addEventListener('wheel', e => { e.preventDefault(); off = Math.min(maxOff(), Math.max(0, off + e.deltaY)); idle = performance.now() + 3000; dir = e.deltaY > 0 ? 1 : -1; }, { passive: false });
 
   /* ---------- 5. 三冊圖鑑 ---------- */
-  const COVER = { low: 'chloro', mid: 'omphalotus', high: 'muscaria' };
-  $('#shelf').innerHTML = D.BOOKS.map((b, i) => { const m = D.byId[COVER[b.key]];
-    return `<button class="book rv${i ? '' : ' on'}" data-book="${b.key}" style="--bc:${b.color};--rd:${i * .1}s">
-      <div class="book-cover"><img class="bc-gill" src="${m.gill}" alt=""><span class="bc-sub">${b.sub} ・ ${b.range}</span><span class="bc-title">${b.title}</span><span class="bc-en">${b.en}</span><img class="bc-mush" src="${m.img}" alt=""></div>
-      <div class="book-meta"><b>${b.title}</b><span>${b.range}</span><p>${b.text}</p></div></button>`; }).join('');
+  // 封面用 03/封面/02_B版（黑卡紙鐳雕版）轉出的網頁圖
+  $('#shelf').innerHTML = D.BOOKS.map((b, i) => `<button class="book rv${i ? '' : ' on'}" data-book="${b.key}" style="--bc:${b.color};--rd:${i * .1}s">
+      <div class="book-cover"><img src="${b.cover}" alt="《${b.title}》封面：${b.sub} ${b.place}"><span class="bc-band"><em>0${i + 1}</em>${b.sub}</span></div>
+      <div class="book-meta"><b>${b.title}</b><span>${b.sub} ・ ${b.range}</span><i>${b.place}</i><p>${b.text}</p></div></button>`).join('');
   function showBook(k) {
     const b = D.BOOKS.find(x => x.key === k);
     $$('.book').forEach(el => el.classList.toggle('on', el.dataset.book === k));
