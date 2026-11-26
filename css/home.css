@@ -539,3 +539,69 @@ body { background: var(--paper); color: var(--ink); }
 
 /* 樹冠環改畫在 canvas（js/home.js drawRings） */
 .ring-cv { position: absolute; inset: 0; width: 100%; height: 100%; display: block; z-index: 0; }
+
+/* ---------- 捲軸示意：掛軸形制的上下軸（2026-11-26） ----------
+   上＝天桿：細漆木桿、兩端銅片、掛繩與銅環；下＝地軸：捲起的紙卷＋車削木軸頭與銅箍；畫心上下各一條金色裱邊 */
+.scroll { width: min(100%, 400px); padding-top: 46px; }
+.rod { margin: 0; border-radius: 0; box-shadow: none; background: none; }
+.rod::before, .rod::after { border-radius: 0; background: none; }
+/* 天桿 */
+.rod:first-child { height: 12px; margin: 0 -10px; border-radius: 3px;
+  background: linear-gradient(90deg, #b8904f 0 7px, transparent 7px calc(100% - 7px), #b8904f calc(100% - 7px)),
+    linear-gradient(180deg, #6a4a2e 0%, #3b2514 45%, #1d1209 100%);
+  box-shadow: 0 1px 0 rgba(255, 236, 200, .18) inset, 0 6px 10px -4px rgba(40, 24, 10, .5); }
+.rod:first-child::before { left: 18%; right: 18%; width: auto; top: -44px; height: 44px; background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 64' preserveAspectRatio='none'%3E%0A%3Cpath d='M6 64 L100 12 L194 64' stroke='%235b4632' stroke-width='1.6' fill='none' vector-effect='non-scaling-stroke'/%3E%0A%3Cpath d='M8 64 L100 14 L192 64' stroke='%23c9b08a' stroke-opacity='.35' stroke-width='.8' fill='none' vector-effect='non-scaling-stroke'/%3E%0A%3C/svg%3E") center / 100% 100% no-repeat; }
+.rod:first-child::after { left: 50%; right: auto; top: -52px; width: 16px; height: 16px; margin-left: -8px; background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Cdefs%3E%3ClinearGradient id='b' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0' stop-color='%23f6e3b0'/%3E%3Cstop offset='.5' stop-color='%23b38a46'/%3E%3Cstop offset='1' stop-color='%236b4c1f'/%3E%3C/linearGradient%3E%3C/defs%3E%3Ccircle cx='10' cy='10' r='6.5' fill='none' stroke='url(%23b)' stroke-width='3'/%3E%3C/svg%3E") center / contain no-repeat; }
+/* 地軸 */
+.rod:last-child { height: 22px; margin: 0 -2px; border-radius: 11px;
+  background: linear-gradient(180deg, #fffaf0 0%, #f1e6d0 30%, #dccaa8 62%, #a88f68 100%);
+  box-shadow: 0 1px 0 rgba(255, 255, 255, .7) inset, 0 -2px 0 rgba(120, 95, 60, .25) inset, 0 12px 18px -6px rgba(40, 24, 10, .45); }
+.rod:last-child::before, .rod:last-child::after { top: 50%; width: 44px; height: 30px; margin-top: -15px; }
+.rod:last-child::before { left: -40px; background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 44'%3E%3Cg transform='translate(64 0) scale(-1 1)'%3E%0A%3Cdefs%3E%0A%3ClinearGradient id='w' x1='0' y1='0' x2='0' y2='1'%3E%3Cstop offset='0' stop-color='%236b4a2e'/%3E%3Cstop offset='.28' stop-color='%234a2f1a'/%3E%3Cstop offset='.7' stop-color='%2326170b'/%3E%3Cstop offset='1' stop-color='%23120a04'/%3E%3C/linearGradient%3E%0A%3ClinearGradient id='b' x1='0' y1='0' x2='0' y2='1'%3E%3Cstop offset='0' stop-color='%23f6e3b0'/%3E%3Cstop offset='.4' stop-color='%23c29a55'/%3E%3Cstop offset='.75' stop-color='%2386642c'/%3E%3Cstop offset='1' stop-color='%235a4019'/%3E%3C/linearGradient%3E%0A%3C/defs%3E%0A%3Crect x='0' y='14' width='12' height='16' fill='url(%23w)'/%3E%0A%3Crect x='11' y='10' width='5' height='24' rx='1.2' fill='url(%23b)'/%3E%0A%3Cpath d='M16 8 H30 C40 8 46 13 48 18 C49 20 49 24 48 26 C46 31 40 36 30 36 H16 Z' fill='url(%23w)'/%3E%0A%3Cpath d='M19 11.5 H30 C37 11.5 42 14 44 17' stroke='%23c9a27a' stroke-opacity='.45' stroke-width='1.4' fill='none' stroke-linecap='round'/%3E%0A%3Crect x='27' y='8.5' width='2.4' height='27' fill='url(%23b)' opacity='.9'/%3E%0A%3Cpath d='M48 17.5 C51 17.5 53 19.5 56 20.5 C59 21.3 61 21.6 62 22 C61 22.4 59 22.7 56 23.5 C53 24.5 51 26.5 48 26.5 Z' fill='url(%23b)'/%3E%0A%3C/g%3E%3C/svg%3E") center / contain no-repeat; }
+.rod:last-child::after { right: -40px; background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 44'%3E%0A%3Cdefs%3E%0A%3ClinearGradient id='w' x1='0' y1='0' x2='0' y2='1'%3E%3Cstop offset='0' stop-color='%236b4a2e'/%3E%3Cstop offset='.28' stop-color='%234a2f1a'/%3E%3Cstop offset='.7' stop-color='%2326170b'/%3E%3Cstop offset='1' stop-color='%23120a04'/%3E%3C/linearGradient%3E%0A%3ClinearGradient id='b' x1='0' y1='0' x2='0' y2='1'%3E%3Cstop offset='0' stop-color='%23f6e3b0'/%3E%3Cstop offset='.4' stop-color='%23c29a55'/%3E%3Cstop offset='.75' stop-color='%2386642c'/%3E%3Cstop offset='1' stop-color='%235a4019'/%3E%3C/linearGradient%3E%0A%3C/defs%3E%0A%3Crect x='0' y='14' width='12' height='16' fill='url(%23w)'/%3E%0A%3Crect x='11' y='10' width='5' height='24' rx='1.2' fill='url(%23b)'/%3E%0A%3Cpath d='M16 8 H30 C40 8 46 13 48 18 C49 20 49 24 48 26 C46 31 40 36 30 36 H16 Z' fill='url(%23w)'/%3E%0A%3Cpath d='M19 11.5 H30 C37 11.5 42 14 44 17' stroke='%23c9a27a' stroke-opacity='.45' stroke-width='1.4' fill='none' stroke-linecap='round'/%3E%0A%3Crect x='27' y='8.5' width='2.4' height='27' fill='url(%23b)' opacity='.9'/%3E%0A%3Cpath d='M48 17.5 C51 17.5 53 19.5 56 20.5 C59 21.3 61 21.6 62 22 C61 22.4 59 22.7 56 23.5 C53 24.5 51 26.5 48 26.5 Z' fill='url(%23b)'/%3E%0A%3C/svg%3E") center / contain no-repeat; }
+/* 畫心上下的金色裱邊（一文字） */
+.scroll-win { border-top: 6px solid #b9975e; border-bottom: 6px solid #b9975e;
+  box-shadow: inset 0 1px 0 rgba(255, 240, 200, .5), inset 0 14px 18px -12px rgba(0, 0, 0, .3), inset 0 -14px 18px -12px rgba(0, 0, 0, .3), 0 0 0 1px rgba(90, 64, 30, .18); }
+.scroll-win::before, .scroll-win::after { content: ''; position: absolute; left: 0; right: 0; height: 1px; z-index: 5; background: rgba(255, 238, 196, .55); pointer-events: none; }
+.scroll-win::before { top: 0; } .scroll-win::after { bottom: 0; }
+@media (max-width: 520px) { .rod:last-child::before { left: -30px; width: 34px; } .rod:last-child::after { right: -30px; width: 34px; } .scroll { width: calc(100% - 56px); } }
+
+/* 掛軸 v2：圓頭軸頭、綾絹裱邊（天頭・地頭・兩側）、一文字移到畫心內側 */
+.rod:last-child::before, .rod:last-child::after { width: 46px; height: 32px; margin-top: -16px; }
+.rod:last-child::before { left: -42px; background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 60 40'%3E%3Cg transform='translate(60 0) scale(-1 1)'%3E%0A%3Cdefs%3E%0A%3ClinearGradient id='w' x1='0' y1='0' x2='0' y2='1'%3E%3Cstop offset='0' stop-color='%237a5434'/%3E%3Cstop offset='.22' stop-color='%2355361e'/%3E%3Cstop offset='.62' stop-color='%232a190c'/%3E%3Cstop offset='1' stop-color='%23140b05'/%3E%3C/linearGradient%3E%0A%3ClinearGradient id='b' x1='0' y1='0' x2='0' y2='1'%3E%3Cstop offset='0' stop-color='%23f6e3b0'/%3E%3Cstop offset='.4' stop-color='%23c29a55'/%3E%3Cstop offset='.78' stop-color='%2386642c'/%3E%3Cstop offset='1' stop-color='%235a4019'/%3E%3C/linearGradient%3E%0A%3C/defs%3E%0A%3Crect x='0' y='12' width='10' height='16' fill='url(%23w)'/%3E%0A%3Crect x='9' y='7' width='5' height='26' rx='1.4' fill='url(%23b)'/%3E%0A%3Crect x='13' y='5' width='40' height='30' rx='8' fill='url(%23w)'/%3E%0A%3Cpath d='M17 9.5 H47' stroke='%23e8c9a0' stroke-opacity='.35' stroke-width='2' stroke-linecap='round'/%3E%0A%3Crect x='44' y='4.5' width='3' height='31' rx='1' fill='url(%23b)'/%3E%0A%3Crect x='53' y='12' width='5' height='16' rx='2.5' fill='url(%23b)'/%3E%0A%3C/g%3E%3C/svg%3E") center / contain no-repeat; }
+.rod:last-child::after { right: -42px; background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 60 40'%3E%0A%3Cdefs%3E%0A%3ClinearGradient id='w' x1='0' y1='0' x2='0' y2='1'%3E%3Cstop offset='0' stop-color='%237a5434'/%3E%3Cstop offset='.22' stop-color='%2355361e'/%3E%3Cstop offset='.62' stop-color='%232a190c'/%3E%3Cstop offset='1' stop-color='%23140b05'/%3E%3C/linearGradient%3E%0A%3ClinearGradient id='b' x1='0' y1='0' x2='0' y2='1'%3E%3Cstop offset='0' stop-color='%23f6e3b0'/%3E%3Cstop offset='.4' stop-color='%23c29a55'/%3E%3Cstop offset='.78' stop-color='%2386642c'/%3E%3Cstop offset='1' stop-color='%235a4019'/%3E%3C/linearGradient%3E%0A%3C/defs%3E%0A%3Crect x='0' y='12' width='10' height='16' fill='url(%23w)'/%3E%0A%3Crect x='9' y='7' width='5' height='26' rx='1.4' fill='url(%23b)'/%3E%0A%3Crect x='13' y='5' width='40' height='30' rx='8' fill='url(%23w)'/%3E%0A%3Cpath d='M17 9.5 H47' stroke='%23e8c9a0' stroke-opacity='.35' stroke-width='2' stroke-linecap='round'/%3E%0A%3Crect x='44' y='4.5' width='3' height='31' rx='1' fill='url(%23b)'/%3E%0A%3Crect x='53' y='12' width='5' height='16' rx='2.5' fill='url(%23b)'/%3E%0A%3C/svg%3E") center / contain no-repeat; }
+.rod:last-child { margin: 0 -4px; }
+.rod:first-child { margin: 0 -6px; }
+.scroll-win { border: solid #e4d6b8; border-width: 30px 12px 22px;
+  background-color: #f6efe2;
+  background-image: repeating-linear-gradient(45deg, rgba(150, 120, 70, .05) 0 2px, transparent 2px 6px);
+  box-shadow: inset 0 0 0 1px rgba(120, 90, 50, .25), 0 0 0 1px rgba(120, 90, 50, .14); }
+.scroll-win { border-image: repeating-linear-gradient(45deg, #e6d9bc 0 3px, #dfd0b0 3px 6px) 30 12 22 / 30px 12px 22px; }
+.scroll-win::before, .scroll-win::after { height: 5px; background: linear-gradient(180deg, #d8b878, #b28e52 55%, #8e6d38); box-shadow: 0 1px 2px rgba(60, 40, 15, .25); }
+.scroll-strip { top: 0; }
+
+/* 掛軸 v3：拿掉上方吊繩與圓環；地軸軸頭去掉尖端，改平口圓頭 */
+.scroll { padding-top: 0; }
+.rod:first-child::before, .rod:first-child::after { content: none; display: none; }
+.rod:last-child::before, .rod:last-child::after { width: 40px; height: 31px; margin-top: -15.5px; }
+.rod:last-child::before { left: -36px; background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 52 40'%3E%3Cg transform='translate(52 0) scale(-1 1)'%3E%0A%3Cdefs%3E%0A%3ClinearGradient id='w' x1='0' y1='0' x2='0' y2='1'%3E%3Cstop offset='0' stop-color='%237a5434'/%3E%3Cstop offset='.22' stop-color='%2355361e'/%3E%3Cstop offset='.62' stop-color='%232a190c'/%3E%3Cstop offset='1' stop-color='%23140b05'/%3E%3C/linearGradient%3E%0A%3ClinearGradient id='b' x1='0' y1='0' x2='0' y2='1'%3E%3Cstop offset='0' stop-color='%23f6e3b0'/%3E%3Cstop offset='.4' stop-color='%23c29a55'/%3E%3Cstop offset='.78' stop-color='%2386642c'/%3E%3Cstop offset='1' stop-color='%235a4019'/%3E%3C/linearGradient%3E%0A%3C/defs%3E%0A%3Crect x='0' y='12' width='10' height='16' fill='url(%23w)'/%3E%0A%3Crect x='9' y='7' width='5' height='26' rx='1.4' fill='url(%23b)'/%3E%0A%3Crect x='13' y='5' width='38' height='30' rx='8' fill='url(%23w)'/%3E%0A%3Cpath d='M17 9.5 H46' stroke='%23e8c9a0' stroke-opacity='.35' stroke-width='2' stroke-linecap='round'/%3E%0A%3Crect x='43' y='4.5' width='3' height='31' rx='1' fill='url(%23b)'/%3E%0A%3C/g%3E%3C/svg%3E") center / contain no-repeat; }
+.rod:last-child::after { right: -36px; background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 52 40'%3E%0A%3Cdefs%3E%0A%3ClinearGradient id='w' x1='0' y1='0' x2='0' y2='1'%3E%3Cstop offset='0' stop-color='%237a5434'/%3E%3Cstop offset='.22' stop-color='%2355361e'/%3E%3Cstop offset='.62' stop-color='%232a190c'/%3E%3Cstop offset='1' stop-color='%23140b05'/%3E%3C/linearGradient%3E%0A%3ClinearGradient id='b' x1='0' y1='0' x2='0' y2='1'%3E%3Cstop offset='0' stop-color='%23f6e3b0'/%3E%3Cstop offset='.4' stop-color='%23c29a55'/%3E%3Cstop offset='.78' stop-color='%2386642c'/%3E%3Cstop offset='1' stop-color='%235a4019'/%3E%3C/linearGradient%3E%0A%3C/defs%3E%0A%3Crect x='0' y='12' width='10' height='16' fill='url(%23w)'/%3E%0A%3Crect x='9' y='7' width='5' height='26' rx='1.4' fill='url(%23b)'/%3E%0A%3Crect x='13' y='5' width='38' height='30' rx='8' fill='url(%23w)'/%3E%0A%3Cpath d='M17 9.5 H46' stroke='%23e8c9a0' stroke-opacity='.35' stroke-width='2' stroke-linecap='round'/%3E%0A%3Crect x='43' y='4.5' width='3' height='31' rx='1' fill='url(%23b)'/%3E%0A%3C/svg%3E") center / contain no-repeat; }
+@media (max-width: 520px) { .rod:last-child::before { left: -28px; width: 32px; } .rod:last-child::after { right: -28px; width: 32px; } }
+
+/* 掛軸 v4（文青簡約）：淺色原木細桿＋素白紙＋細邊，不用金屬、軸頭、吊繩、斜紋 */
+.rod:first-child, .rod:last-child {
+  height: 10px; margin: 0 -14px; border-radius: 5px;
+  background: linear-gradient(180deg, #e9d3b0 0, #d3b386 38%, #b8935f 78%, #9c7a4a 100%);
+  box-shadow: 0 3px 8px -2px rgba(70, 50, 25, .28), inset 0 1px 0 rgba(255, 255, 255, .45);
+}
+.rod:last-child { height: 14px; border-radius: 7px; margin: 0 -18px; }
+.rod:first-child::before, .rod:first-child::after,
+.rod:last-child::before, .rod:last-child::after { content: none; display: none; }
+.scroll-win {
+  border: 0; border-image: none;
+  padding: 22px 20px 26px;
+  background: #fbf8f2;
+  box-shadow: 0 30px 50px -28px rgba(60, 40, 20, .35), 0 0 0 1px rgba(60, 40, 20, .06);
+}
+.scroll-win::before, .scroll-win::after { content: none; display: none; }
+@media (max-width: 520px) { .rod:first-child { margin: 0 -8px; } .rod:last-child { margin: 0 -10px; } .scroll { width: calc(100% - 28px); } .scroll-win { padding: 14px 12px 18px; } }

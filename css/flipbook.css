@@ -242,3 +242,25 @@
 .uf-p .fp.art > img { object-fit: fill; }
 /* 書頁容器本身不擋點擊（否則拉到底時封底按鈕點不到）；只有紙張本身可以點 */
 .fb-leaves { pointer-events: none; } .leaf { pointer-events: auto; }
+
+/* ---------- v7 經摺裝：中間不是裝訂桿，只是一道摺痕（2026-11-26） ---------- */
+/* 摺痕：上下兩折在這裡相接，一條細細的凹線＋兩側紙面往內微暗 */
+.fb-hinge { left: 0; right: 0; top: calc(var(--bh) - 9px); height: 18px; border-radius: 0; box-shadow: none;
+  background:
+    linear-gradient(180deg, rgba(0, 0, 0, 0) 0, rgba(0, 0, 0, .22) 46%, rgba(0, 0, 0, .55) 50%, rgba(255, 255, 255, .07) 52%, rgba(0, 0, 0, .18) 56%, rgba(0, 0, 0, 0) 100%); }
+.fb.closed .fb-hinge { opacity: 0; }
+/* 同一條紙：摺線那一側是直角，外緣才有一點點圓角 */
+.face { border-radius: 0; box-shadow: none; }
+.face.front { border-radius: 0 0 3px 3px; }
+.face.back { border-radius: 3px 3px 0 0; }
+.leaf.is-cover .face.front { border-radius: 3px; }
+.fb-board { border-radius: 0 0 3px 3px; }
+/* 紙的影子只往下、往外投，不在摺線上出現一條黑邊（filter 會壓平 3D，不能用在 .fb-leaves） */
+.face.front { box-shadow: 0 16px 26px -8px rgba(0, 0, 0, .45); }
+.face.back { box-shadow: 0 -16px 26px -8px rgba(0, 0, 0, .35); }
+.fb-board { box-shadow: 0 22px 40px -10px rgba(0, 0, 0, .5); }
+.face.front::after { height: 3.2cqh; background: linear-gradient(rgba(0, 0, 0, .32), rgba(0, 0, 0, .08) 40%, transparent); }
+.face.back::after { height: 3.2cqh; background: linear-gradient(transparent, rgba(0, 0, 0, .08) 60%, rgba(0, 0, 0, .32)); }
+/* 翻動中的紙：越接近垂直越亮（迎光）、紙背陰影越深，像真的紙在轉 */
+.leaf .front .shade { background: linear-gradient(0deg, rgba(0, 0, 0, .55), rgba(0, 0, 0, .1) 70%, rgba(255, 246, 225, .06)); opacity: calc(var(--a) * 1.6); }
+.leaf .back .shade { background: linear-gradient(180deg, rgba(0, 0, 0, .55), rgba(0, 0, 0, .1) 70%, rgba(255, 246, 225, .06)); opacity: calc((1 - var(--a)) * 1.6); }
