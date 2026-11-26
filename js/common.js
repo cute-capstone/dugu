@@ -36,7 +36,7 @@
       ${m.gill ? `<div class="md-gill"><img src="${m.gill}" alt="${m.name} 菌褶線稿"><span><b>菌褶線稿</b><br>每一種菇的菌褶都不一樣，也是燈具與杯墊的圖案來源。</span></div>` : ''}
       <p class="md-warn">⚠ 不可採食。若有誤食，請立即就醫並保留菇體。</p>
       <div class="md-acts">
-        <a class="btn btn-ink" href="../dugu-trail/index.html#m=${id}">在毒菇山行找到牠 <span class="arr">→</span></a>
+        <a class="btn btn-ink" href="dugu-trail/index.html#m=${id}">在毒菇山行找到牠 <span class="arr">→</span></a>
         ${m.plate ? `<button class="btn btn-line" data-lb="${m.plate}" data-cap="${m.name} ・ 圖鑑書頁 P.${m.page}">看書頁</button>` : ''}
         ${m.card ? `<button class="btn btn-line" data-lb="${m.card}" data-cap="${m.name} ・ 壓克力攜帶小卡">放大小卡</button>` : ''}
       </div>`;

@@ -74,7 +74,7 @@
   }
   function endFace(b) {
     const i = D.BOOKS.indexOf(b), nx = D.BOOKS[i + 1];
-    return `<div class="fp ink end"><img src="../dugu-trail/img/logo-white.png" alt="讀菇">
+    return `<div class="fp ink end"><img src="dugu-trail/img/logo-white.png" alt="讀菇">
       <p>《${b.title}》拉到底了。</p>
       <div class="end-btns">${nx ? `<button class="fb-btn" data-next="${nx.key}">接著往上：《${nx.title}》${nx.sub} ↑</button>` : `<button class="fb-btn" data-next="low">回到山腳《尋野》</button>`}
         <button class="fb-btn line" data-unfold>把正面全部拉開</button></div>
@@ -202,7 +202,7 @@
     list.forEach(m => { const g = byStage.find(x => x.stage === m.stage); g ? g.names.push(m.name) : byStage.push({ stage: m.stage, m, names: [m.name] }); });
     const rows = byStage.reverse().map((g, i, a) => `<div class="uf-p ${i % 2 ? 'valley' : 'mountain'}" style="--i:${a.length - 1 - i}">${artFace({ ...g.m, name: g.names.join('・') })}</div>`).join('');
     unf.innerHTML = `<div class="uf-head"><b>《${book.title}》正面全部拉開</b><span>${book.sub} ${book.range}・由山腳（下）往上</span>
-        <a class="fb-btn line" href="../dugu-trail/index.html#s=${list[0].stage}">三冊接起來：完整《毒菇山行》捲軸 →</a>
+        <a class="fb-btn line" href="dugu-trail/index.html#s=${list[0].stage}">三冊接起來：完整《毒菇山行》捲軸 →</a>
         <button class="fb-btn" data-unfold>摺回去</button></div>
       <div class="uf-strip" id="ufStrip"><div class="uf-col">${rows}</div></div>`;
     unf.hidden = false; fb.classList.add('unfolded');

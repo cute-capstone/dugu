@@ -60,7 +60,7 @@
 
   // 卷軸縮圖
   const segs = TR.ART.slice().sort((a, b) => b.stages[0] - a.stages[0]);
-  $('#gcScroll').innerHTML = `<div>${segs.map((a, i) => `<img src="../dugu-trail/${a.src}" alt="" loading="lazy" style="margin-top:${i && a.blend ? -(a.blend * a.h / a.w * 100).toFixed(2) : 0}%;position:relative;z-index:${i}">`).join('')}</div>`;
+  $('#gcScroll').innerHTML = `<div>${segs.map((a, i) => `<img src="dugu-trail/${a.src}" alt="" loading="lazy" style="margin-top:${i && a.blend ? -(a.blend * a.h / a.w * 100).toFixed(2) : 0}%;position:relative;z-index:${i}">`).join('')}</div>`;
 
   $('#footGrass').innerHTML = Array.from({ length: 14 }, (_, i) => `<img src="img/scene/${i % 3 ? 'grass-blob' : 'grass-a'}.webp" alt="">`).join('');
   reveal();

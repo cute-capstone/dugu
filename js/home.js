@@ -148,7 +148,7 @@
   strip.innerHTML = segs.map((a, i) => {
     const prev = segs[i - 1];   // 上面那張；這張的上緣疊進它的底部
     const mt = prev && a.blend ? -(a.blend * a.h / a.w * 100) : 0;
-    return `<img src="../dugu-trail/${a.src}" alt="毒菇山行 第 ${a.stages[0]} 頁" style="margin-top:${mt.toFixed(3)}%;z-index:${i + 1}" loading="lazy" draggable="false">`;
+    return `<img src="dugu-trail/${a.src}" alt="毒菇山行 第 ${a.stages[0]} 頁" style="margin-top:${mt.toFixed(3)}%;z-index:${i + 1}" loading="lazy" draggable="false">`;
   }).join('');
   let off = null, dir = -1, drag = null, last = 0, idle = 0;
   const maxOff = () => Math.max(0, strip.offsetHeight - win.clientHeight);
