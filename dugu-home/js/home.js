@@ -53,6 +53,9 @@
     rings.forEach(R => {
       const t = clamp((sp - R.start) / .55), e = easeIn(t) * .6 + ease(t) * .4;
       const z = R.base * (1 + e * 6.5);
+      // 完全淡出後就不畫：放大 7 倍的大圖層會吃光繪圖記憶體，往回捲時出現一塊塊黑框
+      const gone = t > .93; R.el.style.visibility = gone ? 'hidden' : '';
+      if (gone) return;
       R.el.style.transform = `translate(${(-mx * 14 * (1.4 - R.base)).toFixed(1)}px, ${(-my * 8).toFixed(1)}px) scale(${z.toFixed(4)}) rotate(${(e * R.rot).toFixed(2)}deg)`;
       R.el.style.opacity = t > .62 ? clamp(1 - (t - .62) / .3).toFixed(3) : 1;
     });

@@ -70,7 +70,11 @@ window.DUGU = (function () {
     if (GILLS.has(m.id)) m.gill = `${T}img/gill/${m.id}.webp`;
     if (BOOKPAGE[m.id]) { m.page = BOOKPAGE[m.id]; m.plate = `${T}img/book/${m.id}.webp`; }
   });
+  // 書本排版/圖片檔 有 PDF、卷軸站還沒有的書頁（_tools 轉成 img/page/）
+  Object.assign(M.find(m => m.id === 'leucocoprinus'), { page: '06', plate: 'img/page/leucocoprinus.webp' });
   // 三冊圖鑑：依海拔分冊（封面＝03/封面/02_B版 黑卡紙鐳雕版，海拔與封面一致；中高海拔公尺數待組員確認）
+  // 封面實體是三層黑卡紙：外框（鐳雕樹林草地、中間挖空）→ 彩繪毒菇 → 底層（紋路＋書名鐳雕）；網頁用 img/cover/frame・mush・base-* 疊出來
+  // 書是「往上拉」的折頁書：上緣裝訂，一頁頁往上翻，翻上去的背面和下一頁對照
   const BOOKS = [
     { key: 'low', title: '尋野', en: 'Into the Wild', range: '0–1,200 m', sub: '低海拔', color: '#7f9a4a',
       place: '溪澗・草地・平原的毒菇', cover: 'img/cover/cover-low.webp',
