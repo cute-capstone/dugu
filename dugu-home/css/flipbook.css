@@ -169,3 +169,67 @@
 .fb-legend span { font-family: var(--serif); font-weight: 900; font-size: 18px; letter-spacing: .16em; }
 .fb-legend small { display: block; font-family: var(--sans); font-weight: 400; font-size: 12.5px; letter-spacing: .06em; opacity: .7; margin-top: 2px; }
 @media (max-width: 1100px) { .fb-legend { right: auto; left: 0; width: 100%; } .fb-legend li { right: auto; left: 0; flex-direction: row; text-align: left; top: calc(var(--y) - 14%); } .fb-legend li::before { display: none; } .fb-legend span { font-size: 14px; } }
+
+/* ---------- v6 經摺裝：上＝說明頁（背面）、下＝同一種菇的山行插畫（正面） ---------- */
+.fp.art { background: linear-gradient(180deg, var(--sky1, #d9d3bd) 0%, var(--sky2, #b9b48f) 100%); overflow: hidden; }
+.fp.art::before { content: ''; position: absolute; inset: 0; background: radial-gradient(120% 60% at 50% 0%, rgba(255, 255, 255, .45), transparent 70%); }
+.fp.art > img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 50% 100%; }
+.af-cap { position: absolute; left: 2cqw; bottom: 3cqh; z-index: 3; display: flex; align-items: baseline; gap: 1cqw; padding: .7cqw 1.6cqw .7cqw 1cqw; border-radius: 99px;
+  background: rgba(13, 11, 10, .82); color: #f4ecdc; font-family: var(--serif); font-weight: 900; font-size: max(13px, 1.8cqw); letter-spacing: .1em; }
+.af-cap em { font-style: normal; font-family: var(--mono); font-weight: 400; font-size: max(10px, 1.05cqw); letter-spacing: .14em; color: #e39a3b; }
+.fp.art.pending { display: grid; place-items: center; }
+.af-mush { position: relative; height: 72cqh; object-fit: contain; filter: drop-shadow(0 1.4cqw 1.6cqw rgba(0, 0, 0, .35)); }
+.af-note { position: absolute; right: 2cqw; bottom: 3cqh; font-size: max(11px, 1.1cqw); color: #2a221b; opacity: .7; letter-spacing: .08em; }
+/* 摺痕：每一折上緣一條淡淡的凹線 */
+.face.front::after, .face.back::after { content: ''; position: absolute; left: 0; right: 0; height: 1.4cqh; z-index: 5; pointer-events: none; }
+.face.front::after { top: 0; background: linear-gradient(rgba(0, 0, 0, .35), transparent); }
+.face.back::after { bottom: 0; background: linear-gradient(transparent, rgba(0, 0, 0, .35)); }
+/* 書口：還沒拉開的折，在下方露出疊起來的紙邊 */
+.fb-board::after { content: ''; position: absolute; left: 0; right: 0; bottom: 0; height: 6px; background: repeating-linear-gradient(#2a2520 0 1px, #0d0b0a 1px 2px); opacity: .7; }
+
+/* 左右的「上／下」標示 */
+.fb-side { position: absolute; left: calc(100% + 14px); display: flex; flex-direction: column; gap: 2px; font-family: var(--serif); font-weight: 900; font-size: 17px; letter-spacing: .18em;
+  color: #efe6d4; opacity: 0; transition: opacity .5s; pointer-events: none; writing-mode: vertical-rl; }
+.fb-side small { font-family: var(--sans); font-weight: 400; font-size: 11px; letter-spacing: .2em; opacity: .55; }
+.fb-side.up { top: calc(var(--bh) * .5); transform: translateY(-50%); }
+.fb-side.dn { top: calc(var(--bh) * 1.5); transform: translateY(-50%); color: #e39a3b; }
+.fb.reading .fb-side { opacity: .9; }
+.fb-count b { font-size: 15px; color: #e39a3b; margin-right: 4px; }
+.fb-count span { opacity: .6; margin-left: 6px; }
+.fb-unf { padding: 8px 16px; border-radius: 99px; border: 1px solid #e39a3b; background: none; color: #e39a3b; font-weight: 700; font-size: 13px; letter-spacing: .1em; cursor: pointer; }
+.fb-unf:hover { background: #e39a3b; color: #14110d; }
+.fb.explode .fb-side { opacity: 0; }
+
+/* ---------- 正面全部拉開＝捲軸 ---------- */
+.fb-unfold { position: absolute; inset: 0; z-index: 990; display: grid; grid-template-rows: auto 1fr; justify-items: center; padding: 14px 16px 0;
+  background: radial-gradient(120% 90% at 50% 55%, #2a221b 0%, #120e0b 60%, #0a0807 100%); opacity: 0; transition: opacity .45s; }
+.fb-unfold[hidden] { display: none; }
+.fb-unfold.on { opacity: 1; }
+.uf-head { width: min(1180px, 100%); display: flex; align-items: center; gap: 14px; flex-wrap: wrap; padding-bottom: 12px; }
+.uf-head > b { font-family: var(--serif); font-size: 20px; letter-spacing: .14em; }
+.uf-head > span { font-size: 12.5px; letter-spacing: .12em; opacity: .65; margin-right: auto; }
+.uf-head .fb-btn { font-size: 13px; padding: 8px 16px; }
+.uf-strip { width: min(980px, 100%); overflow-y: auto; overscroll-behavior: contain; perspective: 1600px; padding: 10px 0 40px; scrollbar-width: thin; }
+.uf-col { display: flex; flex-direction: column; box-shadow: 0 30px 70px rgba(0, 0, 0, .55); }
+.uf-p { position: relative; aspect-ratio: 1600 / 775; container-type: size; transform-origin: 50% 100%; transition: transform .9s cubic-bezier(.3, .7, .2, 1), filter .9s; transition-delay: calc(var(--i) * 90ms); }
+.uf-p .fp { border-radius: 0; }
+.uf-p .af-cap { left: auto; right: 2cqw; }
+/* 一凸一凹的摺痕 */
+.uf-p.mountain::after, .uf-p.valley::after { content: ''; position: absolute; left: 0; right: 0; bottom: 0; height: 5%; z-index: 4; pointer-events: none; }
+.uf-p.mountain::after { background: linear-gradient(transparent, rgba(0, 0, 0, .28)); }
+.uf-p.valley::after { background: linear-gradient(transparent, rgba(255, 255, 255, .18)); }
+/* 還沒拉開：每折往後摺 */
+.fb-unfold:not(.on) .uf-p.mountain { transform: rotateX(-70deg); filter: brightness(.6); }
+.fb-unfold:not(.on) .uf-p.valley { transform: rotateX(70deg); filter: brightness(.8); }
+@media (max-width: 700px) { .fb-side { display: none; } .uf-head > b { font-size: 17px; } .fb-unf { padding: 6px 12px; font-size: 12px; } }
+@media (prefers-reduced-motion: reduce) { .uf-p { transition: none; } }
+/* 拉開時用插畫原比例，上下接得起來 */
+.uf-p { aspect-ratio: auto; container-type: inline-size; }
+.uf-p .fp.art { position: relative; inset: auto; }
+.uf-p .fp.art > img { position: relative; height: auto; display: block; }
+.uf-p .fp.art.pending { aspect-ratio: 2.4; }
+.uf-p .af-cap { bottom: 2cqw; }
+.uf-p .fp.art.pending .af-mush { height: 30cqw; }
+.fp.art > img.af-mush { position: relative; inset: auto; width: auto; height: 72cqh; object-fit: contain; }
+.uf-p .fp.art > img.af-mush { height: 30cqw; }
+.af-note { top: 3cqh; bottom: auto; } .uf-p .af-note { top: 2cqw; }
