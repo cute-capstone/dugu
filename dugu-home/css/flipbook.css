@@ -233,3 +233,10 @@
 .fp.art > img.af-mush { position: relative; inset: auto; width: auto; height: 72cqh; object-fit: contain; }
 .uf-p .fp.art > img.af-mush { height: 30cqw; }
 .af-note { top: 3cqh; bottom: auto; } .uf-p .af-note { top: 2cqw; }
+/* 山行插畫用原檔完整呈現：不加白色天空，透明處露出黑卡紙 */
+.fp.art { background: #0d0b0a; }
+.fp.art::before { content: none; }
+.fp.art > img { object-fit: contain; object-position: 50% 50%; }
+.fp.art.pending { background: #0d0b0a; }
+.fp.art.pending .af-note { color: #ece2cf; }
+.uf-p .fp.art > img { object-fit: fill; }

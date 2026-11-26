@@ -12,7 +12,7 @@
   const clamp = (v, a, b) => Math.min(b, Math.max(a, v));
   const RATIO = 1600 / 775;                      // 封面比例（每一折同大小）
   const T = D.TYPES;
-  const ARTN = Object.fromEntries(D.ART.map(a => [a.n, a.src]));   // 山行插畫：第 n 層＝書頁 n
+  const ARTN = Object.fromEntries(D.ART.map(a => [a.n, `img/art/art-${String(a.n).padStart(2, '0')}.webp`]));   // 山行插畫原檔（完整、不做接縫透明）：第 n 層＝書頁 n
   const SKY = { low: ['#d9d3bd', '#b9b48f'], mid: ['#c9d2c3', '#9fae98'], high: ['#cdd5da', '#a7b3ba'] };
 
   /* ---------- 1. 三層封面 ---------- */
