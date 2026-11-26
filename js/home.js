@@ -37,7 +37,47 @@
 
   const hero = $('.hero'), scene = $('#scene'), hint = $('#hint'), say = $('#say'), logo = $('#heroLogo'), torch = $('#torch'), heroFade = $('#heroFade');
   // 三層樹冠環：林緣（最暗、最先穿過）→ 林間 → 林床（最亮）
-  const rings = ['.r-front', '.r-mid', '.r-back'].map((q, i) => ({ el: $(q), base: [1.04, .9, .78][i], start: [0, .14, .28][i], rot: [-3, 2.2, -1.4][i] }));
+  const rings = ['.r-front', '.r-mid', '.r-back'].map((q, i) => ({ el: $(q), base: [1.04, .9, .78][i], start: [0, .14, .28][i], rot: [-3, 2.2, -1.4][i],
+    dur: [9, 11, 13][i], delay: [0, 4, 7][i], flip: i === 1 ? -1 : 1 }));
+  /* 樹冠環畫在一張和螢幕一樣大的 canvas 上（2026-11-26）：
+     以前是 CSS 把 116vh 的大圖放大到 7 倍＋60vmax 色塊陰影 → 圖層超大，往回捲時來不及重畫，出現一塊塊黑框。
+     現在每一格只畫螢幕看得到的部分，幾何（位置、放大、旋轉、滑鼠視差、樹冠搖晃）和原本 CSS 一樣。 */
+  const ringCv = document.createElement('canvas'), rc = ringCv.getContext('2d');
+  ringCv.className = 'ring-cv'; $('.rings').prepend(ringCv);
+  rings.forEach(R => { R.img = $('img', R.el); R.color = getComputedStyle(R.el).getPropertyValue('--rc').trim() || '#120e0a'; R.el.style.display = 'none'; });
+  // 最底層原本有 blur(1.2px)：先做一張縮小模糊版，每格直接畫
+  const backR = rings[2];
+  const blurBack = () => { const im = backR.img; if (!im.complete || !im.naturalWidth) return im.addEventListener('load', blurBack, { once: true });
+    const c = document.createElement('canvas'); c.width = 1600; c.height = Math.round(1600 * im.naturalHeight / im.naturalWidth);
+    const x = c.getContext('2d'); x.filter = 'blur(0.8px)'; x.drawImage(im, 0, 0, c.width, c.height); backR.src = c; };
+  blurBack();
+  let dpr = 1;
+  const sizeRingCv = () => { dpr = Math.min(devicePixelRatio || 1, 2); ringCv.width = Math.round(innerWidth * dpr); ringCv.height = Math.round(innerHeight * dpr); };
+  sizeRingCv(); addEventListener('resize', sizeRingCv);
+  const sway = (R, now) => {   // 對應 CSS @keyframes canopy（alternate、ease-in-out）
+    const u = ((now / 1000 + R.delay) / R.dur) % 2, tri = u < 1 ? u : 2 - u, k = (1 - Math.cos(Math.PI * tri)) / 2;
+    return { r: (-.5 + k) * Math.PI / 180, x: -.004 + k * .008, y: k * .003 };
+  };
+  function drawRings(states) {
+    const vw = innerWidth, vh = innerHeight, now = performance.now();
+    const H = vh * (matchMedia('(max-aspect-ratio: 3/4)').matches ? .96 : 1.16), W = H * 3200 / 2262;
+    const left = vw / 2 - W / 2, top = vh / 2 - .48 * H, ox = vw / 2, oy = top + .56 * H;
+    rc.setTransform(1, 0, 0, 1, 0, 0); rc.clearRect(0, 0, ringCv.width, ringCv.height);
+    for (let i = rings.length - 1; i >= 0; i--) {       // 由最遠（林床）畫到最近（林緣）
+      const R = rings[i], st = states[i]; if (!st || st.alpha <= 0) continue;
+      const img = R.src || R.img; if (!img || (img.complete === false) || (img.naturalWidth === 0)) continue;
+      rc.setTransform(dpr, 0, 0, dpr, 0, 0); rc.globalAlpha = st.alpha;
+      rc.translate(ox + st.dx, oy + st.dy); rc.scale(st.z, st.z); rc.rotate(st.rot * Math.PI / 180); rc.translate(-ox + left, -oy + top);
+      // 圖片外面補滿樹冠色（原本的 box-shadow）
+      const big = Math.max(vw, vh) * 4 / st.z + W;
+      rc.beginPath(); rc.rect(-big, -big, W + big * 2, H + big * 2); rc.rect(1, 1, W - 2, H - 2);
+      rc.fillStyle = R.color; rc.fill('evenodd');
+      const s = reduce ? { r: 0, x: 0, y: 0 } : sway(R, now);
+      rc.translate(W / 2 + s.x * W, H * .2 + s.y * H); rc.rotate(s.r); rc.scale(R.flip, 1); rc.translate(-W / 2, -H * .2);
+      rc.drawImage(img, 0, 0, W, H);
+    }
+    rc.globalAlpha = 1;
+  }
   const depthLis = $$('#depth li'), dapple = $('.dapple'), depthEl = $('#depth');
   const lyrs = $$('.lyr').map(el => ({ el, d: +el.dataset.depth }));
   let mx = 0, my = 0, tx = 0, ty = 0, p = 0, sp = 0, tcx = innerWidth / 2, tcy = innerHeight / 2, cxs = tcx, cys = tcy;
@@ -50,15 +90,11 @@
     p = clamp(-r.top / span);
     sp += (p - sp) * (reduce ? 1 : .085);             // 捲動帶一點慣性，像慢慢走進去
     mx += (tx - mx) * .05; my += (ty - my) * .05;
-    rings.forEach(R => {
+    drawRings(rings.map(R => {
       const t = clamp((sp - R.start) / .55), e = easeIn(t) * .6 + ease(t) * .4;
-      const z = R.base * (1 + e * 6.5);
-      // 完全淡出後就不畫：放大 7 倍的大圖層會吃光繪圖記憶體，往回捲時出現一塊塊黑框
-      const gone = t > .93; R.el.style.visibility = gone ? 'hidden' : '';
-      if (gone) return;
-      R.el.style.transform = `translate(${(-mx * 14 * (1.4 - R.base)).toFixed(1)}px, ${(-my * 8).toFixed(1)}px) scale(${z.toFixed(4)}) rotate(${(e * R.rot).toFixed(2)}deg)`;
-      R.el.style.opacity = t > .62 ? clamp(1 - (t - .62) / .3).toFixed(3) : 1;
-    });
+      return { z: R.base * (1 + e * 6.5), rot: e * R.rot, dx: -mx * 14 * (1.4 - R.base), dy: -my * 8,
+        alpha: t > .92 ? 0 : t > .62 ? clamp(1 - (t - .62) / .3) : 1 };
+    }));
     const all = ease(clamp(sp / .95));
     scene.style.transform = `scale(${(1.04 + all * .07).toFixed(4)})`;
     lyrs.forEach(({ el, d }) => { el.style.transform = `translate3d(${(-mx * 26 * d).toFixed(1)}px, ${(-my * 10 * d + all * 46 * (d - .55)).toFixed(1)}px, 0) scale(${(1 + all * .08 * d).toFixed(4)})`; });

@@ -536,3 +536,6 @@ body { background: var(--paper); color: var(--ink); }
 /* 標題分行：以逗號為界，不讓最後一個字單獨掉到下一行 */
 .hero-say b i { font-style: normal; white-space: nowrap; display: inline-block; }
 .h2, .foot-say, .lead, .hero-say span, .book-meta p { text-wrap: balance; }
+
+/* 樹冠環改畫在 canvas（js/home.js drawRings） */
+.ring-cv { position: absolute; inset: 0; width: 100%; height: 100%; display: block; z-index: 0; }
