@@ -240,3 +240,5 @@
 .fp.art.pending { background: #0d0b0a; }
 .fp.art.pending .af-note { color: #ece2cf; }
 .uf-p .fp.art > img { object-fit: fill; }
+/* 書頁容器本身不擋點擊（否則拉到底時封底按鈕點不到）；只有紙張本身可以點 */
+.fb-leaves { pointer-events: none; } .leaf { pointer-events: auto; }
