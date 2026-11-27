@@ -19,8 +19,7 @@
   const at = id => { const [x, b, h] = PBM[id]; return [id, +(x * FH).toFixed(1), +(h * FH).toFixed(1), +(FB + b * FH).toFixed(1)]; };
   // 淡淡的遠景（原本的高山霧林畫片＋針葉林剪影），讓海報的山後面還有好幾層
   const ALP = [['p-alpine', -132, 40, 44, 1, 'pale'], ['p-alpine', -84, 46, 40, -1, 'pale'], ['p-alpine', -30, 42, 46, 1, 'pale'], ['p-alpine', 22, 44, 42, -1, 'pale'],
-    ['p-alpine', 74, 46, 40, 1, 'pale'], ['p-alpine', 126, 42, 44, -1, 'pale'],
-    ['b-bird', -21, 6.2, 77], ['b-bird', 4, 4.5, 60], ['b-bird', 58, 3.6, 70], ['b-bird', -74, 3.8, 64]];
+    ['p-alpine', 74, 46, 40, 1, 'pale'], ['p-alpine', 126, 42, 44, -1, 'pale']];
   const MIST = [['conifer', -128, 34, 38, 1, 'mist'], ['conifer', -112, 26, 42, -1, 'mist'], ['broadleaf', -96, 26, 40, 1, 'mist'], ['conifer', -62, 30, 42, 1, 'mist'],
     ['broadleaf', -44, 22, 46, -1, 'mist'], ['conifer', -8, 24, 48, -1, 'mist'], ['conifer', 18, 28, 46, 1, 'mist'], ['broadleaf', 46, 24, 44, 1, 'mist'],
     ['conifer', 66, 32, 40, -1, 'mist'], ['broadleaf', 98, 26, 40, -1, 'mist'], ['conifer', 118, 34, 38, 1, 'mist'], ['conifer', 140, 28, 42, -1, 'mist']];
@@ -50,6 +49,38 @@
   $('.lyr-ground').innerHTML = imgs(GROUND);
   $('.lyr-mush').innerHTML = mush(M_FRONT);
   $('.lyr-front').innerHTML = imgs(FRONT);
+
+  /* ---------- 1b. 活的海報（2026-11-27，參考 主視覺海報/dugu_mushroom_live_poster.mp4）----------
+     鳥群飛越、霧雲飄過山腰、溪面閃光、陣風吹過菇與草叢、鏡頭緩慢呼吸 */
+  // 鳥：同一張雁，切成翅膀（上半）與身體（下半），翅膀上下拍；整隻沿弧線由左飛到右
+  // [起飛延遲 s, 離頂 vh, 大小 vh, 飛越秒數, 拍翅秒數]
+  const BIRDS = [[0, 24, 7.2, 46, .82], [1.4, 28.5, 6, 48, .74], [2.9, 20.5, 5, 50, .9], [4.1, 31, 4.4, 52, .7],
+    [24, 13, 4.2, 58, .78], [25.6, 16.5, 3.6, 60, .86], [41, 35, 5.4, 44, .8]];
+  const flock = document.createElement('div'); flock.className = 'flock';
+  flock.innerHTML = BIRDS.map(([dl, y, sz, dur, fl], i) => `<div class="goose" style="--y:${y}vh;--s:${sz}vh;--dur:${dur}s;--dl:${(-dl - i * 3.3).toFixed(1)}s;--fl:${fl}s;--bd:${(i * .9).toFixed(1)}s">
+      <div class="goose-in"><img class="b" src="${S('b-bird')}" alt=""><img class="w" src="${S('b-bird')}" alt=""></div></div>`).join('');
+  $('.lyr-alp').appendChild(flock);
+  // 霧雲：一條條淡霧慢慢飄過山腰與林線
+  const clouds = document.createElement('div'); clouds.className = 'clouds';
+  clouds.innerHTML = [[52, 30, 13, 120, 0], [60, 40, 11, 150, -40], [44, 22, 9, 105, -75], [70, 47, 15, 170, -20], [38, 35, 8, 135, -100]]
+    .map(([w, b, h, dur, dl]) => `<i style="--w:${w}vh;--b:${b}vh;--h:${h}vh;--dur:${dur}s;--dl:${dl}s"></i>`).join('');
+  $('.lyr-far').appendChild(clouds);
+  // 溪面閃光：散在海報溪流那一帶（畫框比例換成 vh），跟著地面層一起動
+  const glint = document.createElement('div'); glint.className = 'glints';
+  const gr0 = (seed => () => ((seed = (seed * 16807) % 2147483647) - 1) / 2147483646)(7);
+  glint.innerHTML = Array.from({ length: 34 }, () => { const x = (gr0() - .5) * 1.9 * FW, yr = .62 + gr0() * .22, b = FB + (1 - yr) * FH;
+    return `<i style="--x:${x.toFixed(1)};--b:${b.toFixed(1)};--t:${(2.4 + gr0() * 3).toFixed(2)}s;--dl:${(-gr0() * 5).toFixed(2)}s;--z:${(.6 + gr0() * .9).toFixed(2)}"></i>`; }).join('');
+  // 溪流：水面遮罩（pb-water，和 pb-ground 同一個畫框）裡跑三層流動水紋，只在水上流，石頭、草叢不動
+  const flow = document.createElement('div'); flow.className = 'flow';
+  flow.setAttribute('style', `--x:0;--h:${FH};--b:${FB}`);
+  flow.innerHTML = '<i class="f1"></i><i class="f2"></i><i class="f3"></i>';
+  $('.lyr-ground').insertBefore(flow, $('.lyr-ground').children[1] || null);
+  $('.lyr-ground').appendChild(glint);
+  // 陣風：一陣陣從左吹到右，越高越細的菇擺得越多
+  const FLEX = { psilocybe: 1.5, panaeolus: 1.6, leucocoprinus: 1.4, inocybe: 1.3, mutinus: 1.2, cornu: .9, gyromitra: .45, omphalotus: .35, weasel: 0 };
+  const swayM = $$('.lyr .mu').map(el => ({ img: $('img', el), x: parseFloat(el.style.getPropertyValue('--x')) || 0, k: FLEX[el.dataset.mush] ?? 1 }));
+  const gust = t => { const s1 = Math.sin(t / 2300) * .5 + Math.sin(t / 1270 + 1.3) * .25 + Math.sin(t / 640 + .4) * .1;
+    const g = Math.max(0, Math.sin(t / 9000 - .6)); return s1 * .6 + g * g * g * 1.6 * (.8 + Math.sin(t / 310) * .2); };
 
   const hero = $('.hero'), scene = $('#scene'), hint = $('#hint'), say = $('#say'), logo = $('#heroLogo'), torch = $('#torch'), heroFade = $('#heroFade');
   // 三層樹冠環：林緣（最暗、最先穿過）→ 林間 → 林床（最亮）
@@ -113,7 +144,12 @@
         alpha: t > .92 ? 0 : t > .62 ? clamp(1 - (t - .62) / .3) : 1 };
     }));
     const all = ease(clamp(q / .95));
-    scene.style.transform = `scale(${(1.02 + all * .03).toFixed(4)})`;
+    const now2 = performance.now(), breath = reduce ? 0 : Math.sin(now2 / 7000) * .006;
+    scene.style.transform = `scale(${(1.02 + all * .03 + breath).toFixed(4)})`;
+    if (!reduce) {
+      swayM.forEach(m =>{ m.img.style.rotate = (gust(now2 - (m.x + 80) * 22) * m.k * 1.5).toFixed(2) + 'deg'; });
+      scene.style.setProperty('--g', gust(now2 - 900).toFixed(3));
+    }
     lyrs.forEach(({ el, d }) => { el.style.transform = `translate3d(${(-mx * 26 * d).toFixed(1)}px, ${(-my * 10 * d + all * 46 * (d - .55)).toFixed(1)}px, 0) scale(${(1 + all * .04 * d).toFixed(4)})`; });
     logo.style.transform = `translate(-50%, calc(-50% + ${(all * 3).toFixed(2)}vh)) scale(${(1 - all * .08).toFixed(3)})`;
     hint.style.opacity = Math.max(0, 1 - sp * 6);
@@ -123,7 +159,10 @@
     depthEl.style.opacity = q > .92 ? .3 : 1;
     $('.rings').style.setProperty('--shade', (1 - clamp((q - .55) / .35)).toFixed(3));
     dapple.style.opacity = (.55 * (1 - clamp((q - .5) / .4))).toFixed(3);
-    say.classList.toggle('on', q > .9);
+    // 說明卡跟著捲動漸進：先浮上來、字一行行出現；捲出開場時再慢慢沉下淡出（不再用 class 一下子切換）
+    const sIn = ease(clamp((q - .8) / .16)), sOut = ease(clamp((sp - .88) / .1)), sv = sIn * (1 - sOut);
+    say.style.setProperty('--sv', sv.toFixed(3)); say.style.setProperty('--so', sOut.toFixed(3));
+    say.style.visibility = sv > .002 ? 'visible' : 'hidden';
     cxs += (tcx - cxs) * .12; cys += (tcy - cys) * .12;
     torch.style.transform = `translate(${cxs.toFixed(0)}px, ${cys.toFixed(0)}px)`;
   }
@@ -245,6 +284,22 @@
   }
   $('#shelf').addEventListener('click', e => { const b = e.target.closest('.book'); if (b) showBook(b.dataset.book); });
   showBook('low');
+  // 書頁列：不顯示捲軸；滑鼠可拖曳、觸控板／手機直接滑；兩側漸隱提示還有更多（2026-11-27）
+  const pagesEl = $('#pages');
+  function pagesRow() {
+    const row = $('.pages-row', pagesEl); if (!row || row.dataset.drag) return; row.dataset.drag = 1;
+    $$('.pg', row).forEach((p, i) => p.style.setProperty('--i', i));
+    const edge = () => { const max = row.scrollWidth - row.clientWidth;
+      row.classList.toggle('at-start', row.scrollLeft < 8); row.classList.toggle('at-end', row.scrollLeft > max - 8); row.classList.toggle('no-more', max < 8); };
+    row.addEventListener('scroll', edge, { passive: true }); edge(); setTimeout(edge, 600);
+    let d = null, moved = false;
+    row.addEventListener('pointerdown', e => { if (e.pointerType !== 'mouse') return; d = { x: e.clientX, s: row.scrollLeft }; moved = false; row.classList.add('grab'); });
+    addEventListener('pointermove', e => { if (!d) return; const dx = e.clientX - d.x; if (Math.abs(dx) > 4) moved = true; row.scrollLeft = d.s - dx; });
+    addEventListener('pointerup', () => { if (d) { d = null; row.classList.remove('grab'); } });
+    row.addEventListener('click', e => { if (moved) { e.stopPropagation(); e.preventDefault(); moved = false; } }, true);
+    row.addEventListener('dragstart', e => e.preventDefault());
+  }
+  new MutationObserver(pagesRow).observe(pagesEl, { childList: true }); pagesRow();
 
   /* ---------- 6. 小卡扇形、頁尾草叢 ---------- */
   $('#fan').innerHTML = ['muscaria', 'phallus', 'verna', 'cornu', 'gymnopilus'].map((id, i) => `<img src="${D.byId[id].card}" alt="" style="--r:${(i - 2) * 6}">`).join('');
@@ -297,5 +352,6 @@
   $('#floorGround').innerHTML = Array.from({ length: 12 }, (_, i) => `<img src="${S(tufts[i % 2])}" alt="" style="left:${(3 + i * 8.6 + tr() * 4).toFixed(1)}%;height:${(22 + tr() * 26).toFixed(0)}px;transform:translateX(-50%) scaleX(${tr() < .5 ? -1 : 1})">`).join('');
   const R = () => Math.random();
   if (!reduce) $('#flies').innerHTML = Array.from({ length: 22 }, () => `<i style="left:${(R() * 100).toFixed(1)}%;top:${(25 + R() * 70).toFixed(1)}%;--t:${(6 + R() * 8).toFixed(1)}s;--dl:${(-R() * 10).toFixed(1)}s;--dx:${(R() * 120 - 60).toFixed(0)}px;--dy:${(R() * 80 - 40).toFixed(0)}px"></i>`).join('');
+
   reveal();
 })();
