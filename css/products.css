@@ -121,3 +121,55 @@
   .lamp-row { grid-template-columns: repeat(2, 1fr); }
   .co-list { grid-template-columns: repeat(2, 1fr); }
 }
+
+/* 細緻版（2026-11-28）：整體縮小一號、留白多一點、圖鑑用真正的三冊封面 */
+.p-hero { padding: 132px 0 76px; }
+.p-h1 { font-size: clamp(34px, 4.4vw, 62px); line-height: 1.22; letter-spacing: .06em; }
+.p-jump { gap: 8px; margin-top: 28px; }
+.p-jump a { padding: 9px 16px; font-size: 13.5px; }
+.p-jump b { font-size: 17px; }
+.lamp-grid { grid-template-columns: minmax(0, 420px) minmax(0, 520px); justify-content: center; }
+.lamp-stage { border-radius: 18px; }
+.spec { border-radius: 12px; }
+.spec div { padding: 12px 14px; }
+.spec dd { font-size: 16.5px; }
+.lamp-row { grid-template-columns: repeat(4, minmax(0, 210px)); justify-content: center; gap: 18px; }
+.lc { border-radius: 14px; }
+.lc-art { aspect-ratio: 5 / 4; }
+.lc-art .q { font-size: 54px; }
+.lc-txt { padding: 12px 14px 14px; }
+.lc-txt b { font-size: 15.5px; }
+.co-grid { grid-template-columns: minmax(0, 520px) minmax(0, 420px); justify-content: center; }
+.co-main { border-radius: 18px; box-shadow: 0 20px 50px rgba(60, 50, 20, .12); }
+.co-main img { aspect-ratio: 1; }
+.co-main figcaption { font-size: 12px; padding: 10px 16px; }
+.co-thumbs button { width: 60px; height: 60px; border-radius: 10px; border-width: 1.5px; }
+.co-set { max-width: 980px; margin-inline: auto; }
+.co-set-h b { font-size: 21px; }
+.co-set-h span { font-size: 13.5px; }
+.co-list { grid-template-columns: repeat(5, minmax(0, 138px)); justify-content: space-between; row-gap: 34px; }
+.co-disc { box-shadow: 0 10px 22px rgba(60, 50, 20, .11), inset 0 0 0 1px var(--line); }
+.co b { font-size: 13.5px; margin-top: 12px; }
+.co small { font-size: 11.5px; }
+.cards-head, .card-grid { max-width: 1060px; margin-inline: auto; }
+.card-grid { grid-template-columns: repeat(auto-fill, minmax(132px, 1fr)); gap: 22px; }
+.guide-grid { max-width: 1060px; }
+.guide-card { min-height: 0; border-radius: 18px; padding: 26px; }
+.guide-card b { font-size: clamp(21px, 2vw, 27px); }
+.guide-card p { font-size: 14.5px; }
+.gc-scroll { height: 220px; margin: -26px -26px 24px; }
+@keyframes climb { from { transform: translateY(calc(-100% + 220px)); } to { transform: translateY(0); } }
+.gc-covers { position: relative; height: 220px; margin-bottom: 24px; }
+.gc-covers img { position: absolute; width: 58%; aspect-ratio: 1600 / 775; object-fit: cover; border-radius: 4px; background: #0b0908;
+  box-shadow: 0 14px 28px rgba(35, 27, 20, .28); transition: transform .7s var(--ease); }
+.gc-covers img:nth-child(1) { left: 0; top: 0; }
+.gc-covers img:nth-child(2) { left: 14%; top: 36px; }
+.gc-covers img:nth-child(3) { left: 28%; top: 72px; }
+.guide-card:hover .gc-covers img:nth-child(1) { transform: translate(-6px, -8px) rotate(-1.5deg); }
+.guide-card:hover .gc-covers img:nth-child(3) { transform: translate(8px, 6px) rotate(1.2deg); }
+@media (max-width: 900px) {
+  .lamp-grid, .co-grid { grid-template-columns: 1fr; }
+  .lamp-row { grid-template-columns: repeat(2, 1fr); }
+  .co-list { grid-template-columns: repeat(2, minmax(0, 150px)); justify-content: space-around; }
+  .gc-covers { height: 180px; } .gc-covers img { width: 64%; } .gc-covers img:nth-child(2) { top: 28px; } .gc-covers img:nth-child(3) { top: 56px; left: 32%; }
+}

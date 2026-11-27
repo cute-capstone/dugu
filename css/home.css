@@ -842,3 +842,20 @@ body { background: var(--paper); color: var(--ink); }
 .floor-ground img { display: none; }
 .floor::after { display: none; }
 .floor-ground::before { height: 90px; bottom: -20px; background: radial-gradient(50% 100% at 50% 100%, rgba(120, 96, 60, .45), rgba(120, 96, 60, 0)); }
+
+/* 2026-11-28b：溪流更明顯（水平長光紋順流而下）、毒性區地面光暈改上下都淡出、書頁陰影不被裁成一條線 */
+.flow .f1 { background: radial-gradient(70px 2.6px at 50% 50%, rgba(255, 255, 255, .95), rgba(255, 255, 255, 0) 72%) 0 0 / 200px 15px,
+    radial-gradient(46px 2px at 50% 50%, rgba(235, 250, 255, .9), rgba(235, 250, 255, 0) 72%) 100px 7px / 200px 15px;
+  animation: flowT1 2.8s linear infinite; opacity: .95; }
+@keyframes flowT1 { from { transform: translateX(0); } to { transform: translateX(200px); } }
+.flow .f2 { background: radial-gradient(16px 3px at 50% 50%, rgba(255, 255, 255, 1), rgba(255, 255, 255, 0) 70%) 0 0 / 90px 19px,
+    radial-gradient(10px 2px at 50% 50%, rgba(255, 255, 255, .95), rgba(255, 255, 255, 0) 70%) 45px 9px / 90px 19px;
+  animation: flowT2 1.7s linear infinite; opacity: .9; }
+@keyframes flowT2 { from { transform: translateX(0); } to { transform: translateX(90px); } }
+.flow .f3 { background: repeating-linear-gradient(84deg, rgba(40, 90, 120, 0) 0 30px, rgba(40, 90, 120, .38) 40px, rgba(40, 90, 120, 0) 50px 100px) 0 0 / 300px 100%;
+  animation: flowT3 7s linear infinite; opacity: 1; }
+.types .floor-ground::before { height: 240px; bottom: -120px; left: 8%; right: 8%;
+  background: radial-gradient(50% 50% at 50% 50%, rgba(150, 118, 70, .32), rgba(150, 118, 70, .12) 55%, rgba(150, 118, 70, 0) 100%); }
+.pages-row { padding-bottom: 40px !important; margin-bottom: -30px; }
+/* 書頁區底部：和下一區（產品）顏色自然銜接，不留一條硬邊 */
+.books { background: linear-gradient(180deg, var(--paper) 0, var(--paper) calc(100% - 26vh), #e7dcca 100%); padding-bottom: max(10vh, 80px) !important; }
