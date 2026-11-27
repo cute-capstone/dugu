@@ -73,7 +73,7 @@
   // 溪流：水面遮罩（pb-water，和 pb-ground 同一個畫框）裡跑三層流動水紋，只在水上流，石頭、草叢不動
   const flow = document.createElement('div'); flow.className = 'flow';
   flow.setAttribute('style', `--x:0;--h:${FH};--b:${FB}`);
-  flow.innerHTML = '<i class="f1"></i><i class="f2"></i><i class="f3"></i>';
+  flow.innerHTML = '<div class="flow-in"><i class="f1"></i><i class="f2"></i></div>';
   $('.lyr-ground').insertBefore(flow, $('.lyr-ground').children[1] || null);
   $('.lyr-ground').appendChild(glint);
   // 菇搖曳：純 CSS 動畫（每朵自己一層，不重畫背景）；越高越細擺得越多，風由左往右傳（延遲依位置）
@@ -149,7 +149,7 @@
         alpha: t > .92 ? 0 : t > .62 ? clamp(1 - (t - .62) / .3) : 1 };
     }));
     const all = ease(clamp(q / .95));
-    const now2 = performance.now(), breath = reduce ? 0 : Math.sin(now2 / 7000) * .006;
+    const breath = 0;
     scene.style.transform = `scale(${(1.02 + all * .03 + breath).toFixed(4)})`;
 
     lyrs.forEach(({ el, d }) => { el.style.transform = `translate3d(${(-mx * 26 * d).toFixed(1)}px, ${(-my * 10 * d + all * 46 * (d - .55)).toFixed(1)}px, 0) scale(${(1 + all * .04 * d).toFixed(4)})`; });

@@ -864,3 +864,20 @@ body { background: var(--paper); color: var(--ink); }
 .lyr .mu img.tuft { position: absolute; left: 50%; bottom: 0; top: auto; height: auto; width: max(calc(var(--tw, 1.2) * 100%), 6vh); max-width: none;
   transform: translate(-50%, 38%) scaleX(var(--tf, 1)); animation: none; filter: none; pointer-events: none; transition: none; will-change: auto; }
 .lyr .mu:hover img.tuft, .lyr .mu:focus-visible img.tuft { translate: none; scale: none; filter: none; }
+
+/* 溪流 v3（2026-11-28d）：亮色漣漪水紋貼圖順流而下（不再是深色條紋＝像陰影）；
+   水紋只鋪在水面那一條（.flow-in＝原圖 y 1160–1640），不是整張大畫框 → 顯示卡負擔小很多，停久了也不會掉圖塊 */
+.lyr .flow { -webkit-mask: none; mask: none; overflow: visible; }
+.lyr .flow-in { position: absolute; left: 0; width: 100%; top: 67.52%; height: 27.94%; overflow: hidden;
+  -webkit-mask-size: 100% 100%; mask-size: 100% 100%; -webkit-mask-repeat: no-repeat; mask-repeat: no-repeat; }
+.flow-in i { position: absolute; top: 0; bottom: 0; left: -480px; width: calc(100% + 960px); will-change: auto; filter: none; }
+.flow-in .f1 { background: url(../img/scene/ripple-a.webp) 0 0 / 360px 135px repeat; opacity: .85; animation: rip1 5.5s linear infinite; }
+.flow-in .f2 { background: url(../img/scene/ripple-b.webp) 120px 40px / 480px 180px repeat; opacity: .55; animation: rip2 9s linear infinite, ripGlow 3.4s ease-in-out infinite alternate; }
+@keyframes rip1 { from { transform: translateX(0); } to { transform: translateX(360px); } }
+@keyframes rip2 { from { transform: translateX(0); } to { transform: translateX(480px); } }
+@keyframes ripGlow { from { opacity: .35; } to { opacity: .7; } }
+@media (prefers-reduced-motion: reduce) { .flow-in i { animation: none; } }
+/* 少開顯示卡圖層：菇的搖動動畫本來就會自己升層，不必再 will-change */
+.lyr .mu img { will-change: auto; }
+/* 每層裁到畫面大小（圖層本身左右延伸 2.8 倍，不裁的話顯示卡要存好幾張超大圖，停久了會丟掉天空圖塊、露出深色底） */
+.lyr { overflow: hidden; overflow: clip; contain: paint; }
