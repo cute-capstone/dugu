@@ -605,3 +605,16 @@ body { background: var(--paper); color: var(--ink); }
 }
 .scroll-win::before, .scroll-win::after { content: none; display: none; }
 @media (max-width: 520px) { .rod:first-child { margin: 0 -8px; } .rod:last-child { margin: 0 -10px; } .scroll { width: calc(100% - 28px); } .scroll-win { padding: 14px 12px 18px; } }
+
+/* ---- 開場背景換 A0 主視覺海報 B 版（2026-11-27）：白亮天空、飽和的樹林、溪流；樹冠層不動 ---- */
+.sky { background:
+  radial-gradient(110vh 55vh at 50% 16%, #ffffff 0%, rgba(255, 255, 255, 0) 70%),
+  linear-gradient(180deg, #fbfaf3 0%, #f8f6ea 38%, #eef2dc 58%, #cfe0a6 78%, #93bf55 100%); }
+.haze.h1 { bottom: 16vh; height: 20vh; background: linear-gradient(180deg, rgba(255, 255, 250, 0), rgba(255, 255, 250, .28) 60%, rgba(255, 255, 250, 0)); }
+.haze.h2 { background: none; }
+.lyr-alp img { filter: saturate(1.05) contrast(1.02); opacity: 1; }
+.lyr-far img { filter: saturate(1.2) contrast(1.04); opacity: 1; }
+.lyr-mid img, .lyr-ground img { filter: saturate(1.15); }
+.lyr-front img { filter: saturate(1.2) brightness(.96); }
+.lyr .bird { transform-origin: 50% 50%; animation: fly 9s ease-in-out infinite alternate; animation-delay: var(--bd, 0s); }
+@keyframes fly { 0% { translate: -3vh .6vh; rotate: -3deg; } 50% { translate: 0 -.8vh; rotate: 2deg; } 100% { translate: 3vh .4vh; rotate: -1deg; } }

@@ -5,23 +5,30 @@
 
   /* ---------- 1. 開場森林：位置用「距離畫面中心幾 vh」排，洞口裡和全螢幕都好看 ---------- */
   // [圖, x, 高, 底, 左右翻]
-  const ALP = [['p-alpine', -62, 50, 15, -1], ['p-alpine', 0, 46, 17], ['p-alpine', 62, 50, 15, -1], ['p-alpine', 122, 50, 15], ['p-alpine', -122, 50, 15]];
-  const FAR = [['conifer', -26, 34, 20], ['conifer', 22, 40, 19], ['conifer', 46, 30, 21, -1], ['conifer', -54, 38, 19, -1], ['conifer', 74, 34, 20],
-    ['conifer', -86, 30, 21], ['broadleaf', -6, 30, 22], ['conifer', 100, 38, 19, -1], ['conifer', -112, 34, 19]];
-  // 毒菇山行的手繪畫片：兩側像走進林道
-  const PANEL = [['p-amanita', -50, 40, 6], ['p-broad', 52, 44, 5], ['p-white', -92, 46, 3], ['p-fence', 92, 42, 4], ['p-nest', -136, 46, 3, -1], ['p-amanita', 134, 44, 3, -1]];
-  const MID = [['broadleaf', -36, 46, 10, -1], ['conifer', 32, 40, 12], ['bamboo', -66, 46, 8], ['broadleaf', 72, 52, 7],
-    ['shrub-flower', 20, 19, 9], ['bush-blue', -20, 13, 9], ['bamboo', 104, 46, 8, -1], ['broadleaf', -104, 54, 7]];
-  const GROUND = [['grass-blob', -70, 22, -3], ['grass-blob', -34, 20, -3, -1], ['grass-blob', 2, 21, -3], ['grass-blob', 36, 20, -3, -1], ['grass-blob', 72, 22, -3],
-    ['grass-blob', 108, 22, -3, -1], ['grass-blob', -106, 22, -3], ['grass-corner', -24, 24, -2], ['grass-dark', 50, 18, -2], ['bush-low', 8, 9, 10], ['fence', -84, 7, 9], ['dung', 60, 7, 8]];
-  const MUSH = [['verna', -3, 33, 4], ['muscaria', -17, 23, 4], ['chloro', 13, 25, 3], ['phallus', 26, 27, 6], ['gyromitra', -27, 16, 2], ['cornu', 5, 11, 1],
-    ['russula', -10, 10, 0], ['leucocoprinus', 33, 19, 9], ['inocybe', -33, 22, 7], ['gymnopilus', -43, 16, 7], ['pantherina', 41, 23, 6], ['panaeolus', -54, 22, 6],
-    ['omphalotus', 54, 15, 4], ['psilocybe', -66, 20, 5], ['nitidum', 66, 20, 5], ['virosa', -78, 22, 4], ['mutinus', 79, 24, 3], ['entoloma', -90, 21, 4],
-    ['pulvero', 90, 18, 5], ['conocybe', -102, 20, 5], ['phalloides', 102, 22, 4]];
-  const FRONT = [['grass-a', -26, 9, -3], ['grass-dark', 22, 8, -3, -1], ['grass-a', -64, 11, -4, -1], ['grass-dark', 64, 11, -4], ['grass-a', 100, 10, -4], ['grass-blob', -118, 12, -5]];
+  // 2026-11-27 改成 A0 主視覺海報 B 版的層次：遠山＋飛雁 → 針闊葉林 → 溪岸草叢 → 溪流與石頭 → 菇 → 前景草叢（素材：03/場景素材/）
+  const ALP = [['b-mt-l', -98, 46, 14, -1], ['b-mt-l', -40, 52, 14], ['b-mt-r', 18, 48, 14], ['b-mt-l', 128, 46, 14, -1], ['b-mt-r', -150, 40, 14, -1],
+    ['b-bird', -30, 6, 63], ['b-bird', 16, 4.5, 56], ['b-bird', 62, 3.5, 67], ['b-bird', -78, 3.8, 58]];
+  const FAR = [['conifer', -58, 50, 9], ['conifer', -44, 38, 12, -1], ['broadleaf', -30, 36, 11], ['broadleaf', -12, 32, 13, -1], ['conifer', 2, 30, 15],
+    ['broadleaf', 16, 34, 12], ['broadleaf', 34, 38, 11, -1], ['conifer', 50, 40, 12, -1], ['broadleaf', 68, 44, 9], ['conifer', 86, 48, 9],
+    ['conifer', -86, 46, 9, -1], ['broadleaf', -72, 40, 10], ['broadleaf', -108, 46, 8], ['broadleaf', 110, 46, 8, -1], ['conifer', -132, 48, 9],
+    ['conifer', 132, 44, 9, -1], ['conifer', 24, 26, 16, -1], ['conifer', -20, 26, 16]];
+  const PANEL = [];
+  const MID = [['grass-blob', -80, 16, 9, -1], ['grass-blob', -30, 14, 10], ['grass-blob', 20, 13, 11, -1], ['grass-blob', 72, 16, 9], ['grass-blob', 118, 16, 9],
+    ['bush-blue', -60, 13, 7], ['shrub-flower', 58, 22, 7], ['b-tuft', -12, 8, 12], ['b-tuft', 38, 8, 12, -1],
+    ['broadleaf', -122, 54, 5], ['bamboo', 124, 48, 5, -1]];
+  const GROUND = [['b-stream', -86, 22, -3, -1], ['b-stream', 70, 22, -3, -1], ['b-stream', -10, 26, -2],
+    ['b-rock', 24, 7, 6], ['b-rock', -42, 6, 4, -1], ['b-rock', 96, 6, 3], ['b-leaves', 44, 6, 1], ['b-leaves', -96, 5, 2, -1],
+    ['fence', -50, 8, 0], ['fence', -74, 8, -1], ['b-weasel', -30, 5.5, 11, -1]];
+  const MUSH = [['gyromitra', -40, 28, 14], ['gymnopilus', -51, 16, 8], ['russula', -24, 18, 8], ['phalloides', -5, 13, 11], ['entoloma', 7, 15, 6],
+    ['nitidum', 17, 13, 14], ['muscaria', 34, 14, 16], ['omphalotus', 1, 7, 17], ['inocybe', -26, 12, 18], ['virosa', 46, 17, 14],
+    ['cornu', 40, 24, 4], ['mutinus', 51, 26, -1], ['phallus', 25, 23, 0], ['chloro', 5, 18, -2], ['psilocybe', -14, 20, 2],
+    ['verna', -34, 21, 0], ['leucocoprinus', -55, 20, 2], ['panaeolus', 64, 20, 4], ['conocybe', -70, 20, 4], ['pantherina', 78, 22, 3], ['pulvero', -84, 18, 4]];
+  const FRONT = [['bush-blue', -46, 10, -4], ['grass-a', -20, 10, -4, -1], ['b-tuft', 8, 9, -4], ['grass-a', 30, 10, -4], ['bush-blue', 58, 9, -4, -1],
+    ['grass-blob', -82, 12, -5], ['grass-blob', 88, 12, -5, -1], ['b-tuft', -104, 9, -4], ['b-tuft', 110, 9, -4, -1]];
   const pos = (x, h, b, f) => `--x:${x};--h:${h};--b:${b}vh;--f:${f || 1}`;
   let wi = 0;
   const imgs = (arr, sway) => arr.map(([n, x, h, b, f]) => { wi++;
+    if (n === 'b-bird') return `<img class="bird" src="${S(n)}" alt="" style="${pos(x, h, b, f)};--bd:${(-(wi * 1.9) % 9).toFixed(2)}s">`;
     const w = sway ? `;--wd:${(6 + (wi * 1.37) % 4).toFixed(2)}s;--wdl:${(-(wi * .83) % 5).toFixed(2)}s` : '';
     return `<img${sway ? ' class="sw"' : ''} src="${S(n)}" alt="" style="${pos(x, h, b, f)}${w}" loading="eager">`; }).join('');
   $('.lyr-alp').innerHTML = imgs(ALP);
