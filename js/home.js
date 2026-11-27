@@ -4,43 +4,52 @@
   const S = n => `img/scene/${n}.webp`;
 
   /* ---------- 1. 開場森林：位置用「距離畫面中心幾 vh」排，洞口裡和全螢幕都好看 ---------- */
-  // [圖, x, 高, 底, 左右翻]
-  // 2026-11-27 改成 A0 主視覺海報 B 版的層次：遠山＋飛雁 → 針闊葉林 → 溪岸草叢 → 溪流與石頭 → 菇 → 前景草叢（素材：03/場景素材/）
-  const ALP = [['b-mt-l', -98, 46, 14, -1], ['b-mt-l', -40, 52, 14], ['b-mt-r', 18, 48, 14], ['b-mt-l', 128, 46, 14, -1], ['b-mt-r', -150, 40, 14, -1],
-    ['b-bird', -30, 6, 63], ['b-bird', 16, 4.5, 56], ['b-bird', 62, 3.5, 67], ['b-bird', -78, 3.8, 58]];
-  const FAR = [['conifer', -58, 50, 9], ['conifer', -44, 38, 12, -1], ['broadleaf', -30, 36, 11], ['broadleaf', -12, 32, 13, -1], ['conifer', 2, 30, 15],
-    ['broadleaf', 16, 34, 12], ['broadleaf', 34, 38, 11, -1], ['conifer', 50, 40, 12, -1], ['broadleaf', 68, 44, 9], ['conifer', 86, 48, 9],
-    ['conifer', -86, 46, 9, -1], ['broadleaf', -72, 40, 10], ['broadleaf', -108, 46, 8], ['broadleaf', 110, 46, 8, -1], ['conifer', -132, 48, 9],
-    ['conifer', 132, 44, 9, -1], ['conifer', 24, 26, 16, -1], ['conifer', -20, 26, 16]];
-  const PANEL = [];
-  const MID = [['grass-blob', -80, 16, 9, -1], ['grass-blob', -30, 14, 10], ['grass-blob', 20, 13, 11, -1], ['grass-blob', 72, 16, 9], ['grass-blob', 118, 16, 9],
-    ['bush-blue', -60, 13, 7], ['shrub-flower', 58, 22, 7], ['b-tuft', -12, 8, 12], ['b-tuft', 38, 8, 12, -1],
-    ['broadleaf', -122, 54, 5], ['bamboo', 124, 48, 5, -1]];
-  const GROUND = [['b-stream', -86, 22, -3, -1], ['b-stream', 70, 22, -3, -1], ['b-stream', -10, 26, -2],
-    ['b-rock', 24, 7, 6], ['b-rock', -42, 6, 4, -1], ['b-rock', 96, 6, 3], ['b-leaves', 44, 6, 1], ['b-leaves', -96, 5, 2, -1],
-    ['fence', -50, 8, 0], ['fence', -74, 8, -1], ['b-weasel', -30, 5.5, 11, -1]];
-  const MUSH = [['gyromitra', -40, 28, 14], ['gymnopilus', -51, 16, 8], ['russula', -24, 18, 8], ['phalloides', -5, 13, 11], ['entoloma', 7, 15, 6],
-    ['nitidum', 17, 13, 14], ['muscaria', 34, 14, 16], ['omphalotus', 1, 7, 17], ['inocybe', -26, 12, 18], ['virosa', 46, 17, 14],
-    ['cornu', 40, 24, 4], ['mutinus', 51, 26, -1], ['phallus', 25, 23, 0], ['chloro', 5, 18, -2], ['psilocybe', -14, 20, 2],
-    ['verna', -34, 21, 0], ['leucocoprinus', -55, 20, 2], ['panaeolus', 64, 20, 4], ['conocybe', -70, 20, 4], ['pantherina', 78, 22, 3], ['pulvero', -84, 18, 4]];
-  const FRONT = [['bush-blue', -46, 10, -4], ['grass-a', -20, 10, -4, -1], ['b-tuft', 8, 9, -4], ['grass-a', 30, 10, -4], ['bush-blue', 58, 9, -4, -1],
-    ['grass-blob', -82, 12, -5], ['grass-blob', 88, 12, -5, -1], ['b-tuft', -104, 9, -4], ['b-tuft', 110, 9, -4, -1]];
-  const pos = (x, h, b, f) => `--x:${x};--h:${h};--b:${b}vh;--f:${f || 1}`;
-  let wi = 0;
-  const imgs = (arr, sway) => arr.map(([n, x, h, b, f]) => { wi++;
+  // [圖, x, 高, 底, 左右翻, class]
+  /* 2026-11-27 第二版：直接用 A0主視覺海報B.ai 拆出來的分層（_tools/prep_home.py 第 6 段）。
+     五張場景層共用同一個「海報畫框」（海報 y 19%–100%），照同一個比例擺就拼回海報；每張已做成 2.8 倍寬（左右接平移＋翻面的複本），寬螢幕也滿版。
+     菇一朵朵切出來（pm-*），保留海報裡的大小與前後，所以有大有小、有主角；後面再補一層淡淡的遠山與霧中針葉林。 */
+  const FH = 92, FB = -4, FW = FH * .8732;                       // 畫框高（vh）、底、寬
+  const frame = n => [[n, 0, FH, FB, 1, 'pb']];
+  // 每朵菇在畫框裡的位置 [x 中心, 底, 高]（畫框高的比例）
+  const PBM = { inocybe: [-0.1461, 0.4818, 0.1641], virosa: [-0.0451, 0.4844, 0.1747], gyromitra: [-0.2868, 0.4403, 0.2908], muscaria: [0.2369, 0.4276, 0.1823],
+    nitidum: [0.1121, 0.4698, 0.1295], omphalotus: [0.0124, 0.4185, 0.1208], verna: [0.3324, 0.4119, 0.1507], phalloides: [0.1603, 0.3119, 0.1685],
+    russula: [-0.1812, 0.3217, 0.1885], gymnopilus: [-0.3453, 0.3388, 0.1816], cornu: [0.3026, 0.3082, 0.2056], pulvero: [-0.0253, 0.3013, 0.1459],
+    entoloma: [0.0811, 0.2864, 0.1317], chloro: [0.0075, 0.0127, 0.2525], phallus: [0.1798, 0.0706, 0.2671], psilocybe: [-0.2131, 0.0801, 0.1838],
+    leucocoprinus: [-0.3575, 0.0804, 0.2744], mutinus: [0.3523, 0.0389, 0.3195], panaeolus: [-0.0919, 0.079, 0.2591], weasel: [-0.2493, 0.3104, 0.0531] };
+  const at = id => { const [x, b, h] = PBM[id]; return [id, +(x * FH).toFixed(1), +(h * FH).toFixed(1), +(FB + b * FH).toFixed(1)]; };
+  // 淡淡的遠景（原本的高山霧林畫片＋針葉林剪影），讓海報的山後面還有好幾層
+  const ALP = [['p-alpine', -132, 40, 44, 1, 'pale'], ['p-alpine', -84, 46, 40, -1, 'pale'], ['p-alpine', -30, 42, 46, 1, 'pale'], ['p-alpine', 22, 44, 42, -1, 'pale'],
+    ['p-alpine', 74, 46, 40, 1, 'pale'], ['p-alpine', 126, 42, 44, -1, 'pale'],
+    ['b-bird', -21, 6.2, 77], ['b-bird', 4, 4.5, 60], ['b-bird', 58, 3.6, 70], ['b-bird', -74, 3.8, 64]];
+  const MIST = [['conifer', -128, 34, 38, 1, 'mist'], ['conifer', -112, 26, 42, -1, 'mist'], ['broadleaf', -96, 26, 40, 1, 'mist'], ['conifer', -62, 30, 42, 1, 'mist'],
+    ['broadleaf', -44, 22, 46, -1, 'mist'], ['conifer', -8, 24, 48, -1, 'mist'], ['conifer', 18, 28, 46, 1, 'mist'], ['broadleaf', 46, 24, 44, 1, 'mist'],
+    ['conifer', 66, 32, 40, -1, 'mist'], ['broadleaf', 98, 26, 40, -1, 'mist'], ['conifer', 118, 34, 38, 1, 'mist'], ['conifer', 140, 28, 42, -1, 'mist']];
+  const FAR = [...frame('pb-mt'), ...MIST];
+  const PANEL = frame('pb-tree');
+  const MID = frame('pb-mid');
+  const GROUND = [...frame('pb-ground'), ['pm-weasel', ...at('weasel').slice(1), -1]];
+  const FRONT = frame('pb-front');
+  // 菇：後排（樹下）→ 中排（溪岸）→ 前排（溪流前）；海報外的兩側再補兩朵小的
+  const M_BACK = ['inocybe', 'virosa'].map(at);
+  const M_MID = ['gyromitra', 'muscaria', 'nitidum', 'omphalotus', 'verna', 'phalloides', 'russula', 'gymnopilus', 'cornu', 'pulvero', 'entoloma'].map(at)
+    .concat([['pantherina', 64, 15, 30], ['conocybe', -66, 12, 29]]);
+  const M_FRONT = ['chloro', 'phallus', 'psilocybe', 'leucocoprinus', 'mutinus', 'panaeolus'].map(at);
+  const pos = (x, h, b, f) => `--x:${x};--h:${h};--b:${b};--f:${f || 1}`;
+  let wi = 0, mi = 0;
+  const imgs = (arr, sway) => arr.map(([n, x, h, b, f, cls]) => { wi++;
     if (n === 'b-bird') return `<img class="bird" src="${S(n)}" alt="" style="${pos(x, h, b, f)};--bd:${(-(wi * 1.9) % 9).toFixed(2)}s">`;
-    const w = sway ? `;--wd:${(6 + (wi * 1.37) % 4).toFixed(2)}s;--wdl:${(-(wi * .83) % 5).toFixed(2)}s` : '';
-    return `<img${sway ? ' class="sw"' : ''} src="${S(n)}" alt="" style="${pos(x, h, b, f)}${w}" loading="eager">`; }).join('');
-  $('.lyr-alp').innerHTML = imgs(ALP);
-  $('.lyr-far').innerHTML = imgs(FAR, 1);
-  $('.lyr-panel').innerHTML = imgs(PANEL);
-  $('.lyr-mid').innerHTML = imgs(MID, 1);
-  $('.lyr-ground').innerHTML = imgs(GROUND, 1);
-  $('.lyr-front').innerHTML = imgs(FRONT, 1);
-  $('.lyr-mush').innerHTML = MUSH.map(([id, x, h, b], i) => {
-    const m = D.byId[id];
-    return `<button class="mu" data-mush="${id}" style="${pos(x, h, b)};--d:${(i * .37) % 1.6}" aria-label="${m.name}"><img src="${m.img}" alt=""><span class="tag">${m.name}</span></button>`;
+    const sw = sway && !cls, w = sw ? `;--wd:${(6 + (wi * 1.37) % 4).toFixed(2)}s;--wdl:${(-(wi * .83) % 5).toFixed(2)}s` : '';
+    return `<img class="${[sw && 'sw', cls].filter(Boolean).join(' ')}" src="${S(n)}" alt="" style="${pos(x, h, b, f)}${w}" loading="eager">`; }).join('');
+  const mush = arr => arr.map(([id, x, h, b]) => { const m = D.byId[id], i = mi++;
+    return `<button class="mu" data-mush="${id}" style="${pos(x, h, b)};--d:${(i * .37) % 1.6}" aria-label="${m.name}"><img src="${PBM[id] ? S('pm-' + id) : m.img}" alt=""><span class="tag">${m.name}</span></button>`;
   }).join('');
+  $('.lyr-alp').innerHTML = imgs(ALP);
+  $('.lyr-far').innerHTML = imgs(FAR);
+  $('.lyr-panel').innerHTML = imgs(PANEL) + mush(M_BACK);
+  $('.lyr-mid').innerHTML = imgs(MID) + mush(M_MID);
+  $('.lyr-ground').innerHTML = imgs(GROUND);
+  $('.lyr-mush').innerHTML = mush(M_FRONT);
+  $('.lyr-front').innerHTML = imgs(FRONT);
 
   const hero = $('.hero'), scene = $('#scene'), hint = $('#hint'), say = $('#say'), logo = $('#heroLogo'), torch = $('#torch'), heroFade = $('#heroFade');
   // 三層樹冠環：林緣（最暗、最先穿過）→ 林間 → 林床（最亮）

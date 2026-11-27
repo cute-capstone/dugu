@@ -618,3 +618,16 @@ body { background: var(--paper); color: var(--ink); }
 .lyr-front img { filter: saturate(1.2) brightness(.96); }
 .lyr .bird { transform-origin: 50% 50%; animation: fly 9s ease-in-out infinite alternate; animation-delay: var(--bd, 0s); }
 @keyframes fly { 0% { translate: -3vh .6vh; rotate: -3deg; } 50% { translate: 0 -.8vh; rotate: 2deg; } 100% { translate: 3vh .4vh; rotate: -1deg; } }
+
+/* ---- 開場第二版（2026-11-27）：直接用海報 B 拆出的分層，照海報比例拼回 ----
+   位置單位：--x、--h、--b 都是 vh，乘上 --k（直式手機縮小，讓整張海報放得進來） */
+.scene { --k: 1; }
+.lyr img, .lyr .mu { bottom: calc(var(--b, 0) * var(--k) * 1vh); left: calc(50% + var(--x) * var(--k) * 1vh); height: calc(var(--h) * var(--k) * 1vh); }
+.lyr img.pb { filter: saturate(1.1) contrast(1.03); opacity: 1; }
+.lyr img.pale { filter: sepia(.15) saturate(.55) brightness(1.12) contrast(.85); opacity: .5; }
+.lyr img.mist { filter: saturate(.45) brightness(1.5) contrast(.7) blur(.6px); opacity: .5; }
+.lyr-far img.pb { filter: saturate(1.15) contrast(1.04); }
+.haze.h1 { bottom: 34vh; height: 34vh; background: linear-gradient(180deg, rgba(255, 255, 250, 0), rgba(255, 255, 250, .45) 55%, rgba(255, 255, 250, 0)); }
+.mu img { filter: drop-shadow(0 8px 6px rgba(40, 50, 20, .16)); }
+.hero-logo { top: 21%; }
+@media (max-aspect-ratio: 3/4) { .scene { --k: .7; } .hero-logo { top: 30%; } }
