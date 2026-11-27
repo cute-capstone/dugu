@@ -76,11 +76,10 @@
   flow.innerHTML = '<i class="f1"></i><i class="f2"></i><i class="f3"></i>';
   $('.lyr-ground').insertBefore(flow, $('.lyr-ground').children[1] || null);
   $('.lyr-ground').appendChild(glint);
-  // 陣風：一陣陣從左吹到右，越高越細的菇擺得越多
-  const FLEX = { psilocybe: 1.5, panaeolus: 1.6, leucocoprinus: 1.4, inocybe: 1.3, mutinus: 1.2, cornu: .9, gyromitra: .45, omphalotus: .35, weasel: 0 };
-  const swayM = $$('.lyr .mu').map(el => ({ img: $('img', el), x: parseFloat(el.style.getPropertyValue('--x')) || 0, k: FLEX[el.dataset.mush] ?? 1 }));
-  const gust = t => { const s1 = Math.sin(t / 2300) * .5 + Math.sin(t / 1270 + 1.3) * .25 + Math.sin(t / 640 + .4) * .1;
-    const g = Math.max(0, Math.sin(t / 9000 - .6)); return s1 * .6 + g * g * g * 1.6 * (.8 + Math.sin(t / 310) * .2); };
+  // 菇搖曳：純 CSS 動畫（每朵自己一層，不重畫背景）；越高越細擺得越多，風由左往右傳（延遲依位置）
+  const FLEX = { psilocybe: 1.6, panaeolus: 1.7, leucocoprinus: 1.4, inocybe: 1.3, mutinus: 1.2, virosa: 1.2, cornu: .9, gyromitra: .45, omphalotus: .35 };
+  $$('.lyr .mu').forEach(el => { const x = parseFloat(el.style.getPropertyValue('--x')) || 0;
+    el.style.setProperty('--amp', (FLEX[el.dataset.mush] ?? 1).toFixed(2)); el.style.setProperty('--wl', (-(x + 120) * .045).toFixed(2) + 's'); });
 
   const hero = $('.hero'), scene = $('#scene'), hint = $('#hint'), say = $('#say'), logo = $('#heroLogo'), torch = $('#torch'), heroFade = $('#heroFade');
   // 三層樹冠環：林緣（最暗、最先穿過）→ 林間 → 林床（最亮）
@@ -146,10 +145,7 @@
     const all = ease(clamp(q / .95));
     const now2 = performance.now(), breath = reduce ? 0 : Math.sin(now2 / 7000) * .006;
     scene.style.transform = `scale(${(1.02 + all * .03 + breath).toFixed(4)})`;
-    if (!reduce) {
-      swayM.forEach(m =>{ m.img.style.rotate = (gust(now2 - (m.x + 80) * 22) * m.k * 1.5).toFixed(2) + 'deg'; });
-      scene.style.setProperty('--g', gust(now2 - 900).toFixed(3));
-    }
+
     lyrs.forEach(({ el, d }) => { el.style.transform = `translate3d(${(-mx * 26 * d).toFixed(1)}px, ${(-my * 10 * d + all * 46 * (d - .55)).toFixed(1)}px, 0) scale(${(1 + all * .04 * d).toFixed(4)})`; });
     logo.style.transform = `translate(-50%, calc(-50% + ${(all * 3).toFixed(2)}vh)) scale(${(1 - all * .08).toFixed(3)})`;
     hint.style.opacity = Math.max(0, 1 - sp * 6);
@@ -160,22 +156,30 @@
     $('.rings').style.setProperty('--shade', (1 - clamp((q - .55) / .35)).toFixed(3));
     dapple.style.opacity = (.55 * (1 - clamp((q - .5) / .4))).toFixed(3);
     // 說明卡跟著捲動漸進：先浮上來、字一行行出現；捲出開場時再慢慢沉下淡出（不再用 class 一下子切換）
-    const sIn = ease(clamp((q - .8) / .16)), sOut = ease(clamp((sp - .88) / .1)), sv = sIn * (1 - sOut);
-    say.style.setProperty('--sv', sv.toFixed(3)); say.style.setProperty('--so', sOut.toFixed(3));
-    say.style.visibility = sv > .002 ? 'visible' : 'hidden';
+    const sayOn = say.classList.contains('on');
+    if (!sayOn && q > .86 && sp < .9) say.classList.add('on');
+    else if (sayOn && (q < .8 || sp > .94)) say.classList.remove('on');
     cxs += (tcx - cxs) * .12; cys += (tcy - cys) * .12;
     torch.style.transform = `translate(${cxs.toFixed(0)}px, ${cys.toFixed(0)}px)`;
   }
 
   /* ---------- 孢子＋落葉（點空地會揚起一陣孢子） ---------- */
   const cv = $('#spores'), cx = cv.getContext('2d');
-  let SP = [], LF = [], BURST = [];
+  let SP = [], LF = [], BURST = [], FL = [];
+  const newFluff = side => ({ x: side ? -30 : Math.random() * innerWidth, y: innerHeight * (.15 + Math.random() * .6), s: 5 + Math.random() * 6,
+    vx: .25 + Math.random() * .45, w: Math.random() * 6.28, a: Math.random() * 6.28, o: .45 + Math.random() * .4 });
+  function fluff(f) {   // 飄絮：一點白芯＋放射細絲
+    cx.save(); cx.translate(f.x, f.y); cx.rotate(f.a); cx.globalAlpha = f.o; cx.strokeStyle = 'rgba(255, 252, 240, .9)'; cx.lineWidth = .6;
+    cx.beginPath(); for (let k = 0; k < 9; k++) { const t = k / 9 * 6.28; cx.moveTo(0, 0); cx.lineTo(Math.cos(t) * f.s, Math.sin(t) * f.s); } cx.stroke();
+    cx.fillStyle = 'rgba(255, 252, 240, .95)'; cx.beginPath(); cx.arc(0, 0, 1.3, 0, 6.29); cx.fill(); cx.restore();
+  }
   const LEAF_C = ['#6f8f3a', '#8fae4a', '#c9a640', '#a8692e', '#4f6e2c'];
   const newLeaf = top => ({ x: Math.random() * innerWidth, y: top ? -20 - Math.random() * innerHeight * .5 : Math.random() * innerHeight, s: 7 + Math.random() * 9,
     vy: .5 + Math.random() * .7, vx: .2 + Math.random() * .5, a: Math.random() * 6.28, va: (Math.random() - .5) * .04, w: Math.random() * 6.28, c: LEAF_C[Math.floor(Math.random() * LEAF_C.length)] });
   function sizeCv() { const r = devicePixelRatio || 1; cv.width = innerWidth * r; cv.height = innerHeight * r; cx.setTransform(r, 0, 0, r, 0, 0);
     SP = Array.from({ length: Math.round(innerWidth / 18) }, () => ({ x: Math.random() * innerWidth, y: Math.random() * innerHeight, r: .6 + Math.random() * 2.2, v: .12 + Math.random() * .4, w: Math.random() * 6.28 }));
-    LF = Array.from({ length: Math.round(innerWidth / 160) + 3 }, () => newLeaf(false)); }
+    LF = Array.from({ length: Math.round(innerWidth / 110) + 5 }, () => newLeaf(false));
+    FL = Array.from({ length: Math.round(innerWidth / 120) + 4 }, () => newFluff(false)); }
   function leaf(l) {
     cx.save(); cx.translate(l.x, l.y); cx.rotate(l.a); cx.scale(1, Math.abs(Math.sin(l.w)) * .7 + .3);   // 翻面時變窄，像在空中翻轉
     cx.beginPath(); cx.moveTo(-l.s, 0); cx.quadraticCurveTo(0, -l.s * .55, l.s, 0); cx.quadraticCurveTo(0, l.s * .55, -l.s, 0);
@@ -191,6 +195,8 @@
       cx.beginPath(); cx.arc(b.x, b.y, b.r, 0, 6.29); cx.fillStyle = `rgba(${b.c}, ${(1 - b.t / b.life) * .9})`; cx.fill(); });
     LF.forEach((l, i) => { l.w += .03; l.a += l.va + Math.sin(l.w) * .01; l.x += l.vx + Math.sin(l.w * .7) * .8; l.y += l.vy;
       if (l.y > innerHeight + 30 || l.x > innerWidth + 30) LF[i] = newLeaf(true); leaf(l); });
+    FL.forEach((f, i) => { f.w += .012; f.a += .004; f.x += f.vx + Math.sin(f.w) * .25; f.y += Math.sin(f.w * 1.3) * .35 + .05;
+      if (f.x > innerWidth + 30 || f.y > innerHeight + 30) FL[i] = newFluff(true); fluff(f); });
   }
   sizeCv(); addEventListener('resize', sizeCv);
   $('#heroStick').addEventListener('click', e => {
@@ -293,8 +299,10 @@
       row.classList.toggle('at-start', row.scrollLeft < 8); row.classList.toggle('at-end', row.scrollLeft > max - 8); row.classList.toggle('no-more', max < 8); };
     row.addEventListener('scroll', edge, { passive: true }); edge(); setTimeout(edge, 600);
     let d = null, moved = false;
-    row.addEventListener('pointerdown', e => { if (e.pointerType !== 'mouse') return; d = { x: e.clientX, s: row.scrollLeft }; moved = false; row.classList.add('grab'); });
-    addEventListener('pointermove', e => { if (!d) return; const dx = e.clientX - d.x; if (Math.abs(dx) > 4) moved = true; row.scrollLeft = d.s - dx; });
+    row.addEventListener('pointerdown', e => { if (e.pointerType !== 'mouse' || e.button) return; d = { x: e.clientX, s: row.scrollLeft }; moved = false; });
+    addEventListener('pointermove', e => { if (!d) return; const dx = e.clientX - d.x;
+      if (!moved && Math.abs(dx) > 6) { moved = true; row.classList.add('grab'); }
+      if (moved) row.scrollLeft = d.s - dx; });
     addEventListener('pointerup', () => { if (d) { d = null; row.classList.remove('grab'); } });
     row.addEventListener('click', e => { if (moved) { e.stopPropagation(); e.preventDefault(); moved = false; } }, true);
     row.addEventListener('dragstart', e => e.preventDefault());
