@@ -631,3 +631,17 @@ body { background: var(--paper); color: var(--ink); }
 .mu img { filter: drop-shadow(0 8px 6px rgba(40, 50, 20, .16)); }
 .hero-logo { top: 21%; }
 @media (max-aspect-ratio: 3/4) { .scene { --k: .7; } .hero-logo { top: 30%; } }
+
+/* ---- 開場微調（2026-11-27）：logo 縮小下移、遠山淡一點、開場拉長讓全景停留 ---- */
+.hero { height: 420vh; }
+.hero-logo { top: 27%; }
+.hero-logo img { width: min(17vh, 40vw); filter: drop-shadow(0 4px 18px rgba(255, 252, 240, .95)); }
+.hero-logo p { margin-top: 12px; font-size: clamp(11px, 1.45vh, 14px); letter-spacing: .62em; padding-left: .62em; font-weight: 600; color: var(--ink); }
+.hero-logo p::before, .hero-logo p::after { content: ""; display: inline-block; width: 22px; height: 1px; background: currentColor; opacity: .45; vertical-align: middle; margin: 0 .9em 0 0; }
+.hero-logo p::after { margin: 0 0 0 .3em; }
+.hero-logo small { margin-top: 4px; font-size: clamp(12px, 1.6vh, 15px); letter-spacing: .14em; }
+.lyr-far img.pb { filter: saturate(.92) brightness(1.06) contrast(.96); opacity: .86; }
+@media (max-aspect-ratio: 3/4) { .hero { height: 380vh; } .hero-logo { top: 31%; } .hero-logo img { width: min(15vh, 36vw); } .hero-logo p { letter-spacing: .3em; padding-left: .3em; } .hero-logo p::before, .hero-logo p::after { width: 14px; } }
+.hero-logo::before { content: ""; position: absolute; z-index: -1; left: 50%; top: 52%; width: 200%; height: 170%; transform: translate(-50%, -50%); pointer-events: none;
+  background: radial-gradient(closest-side, rgba(252, 250, 240, .92) 0%, rgba(252, 250, 240, .7) 45%, rgba(252, 250, 240, 0) 100%); }
+.hero-logo p, .hero-logo small { text-shadow: 0 0 10px rgba(252, 250, 240, .9); }

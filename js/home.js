@@ -8,7 +8,7 @@
   /* 2026-11-27 第二版：直接用 A0主視覺海報B.ai 拆出來的分層（_tools/prep_home.py 第 6 段）。
      五張場景層共用同一個「海報畫框」（海報 y 19%–100%），照同一個比例擺就拼回海報；每張已做成 2.8 倍寬（左右接平移＋翻面的複本），寬螢幕也滿版。
      菇一朵朵切出來（pm-*），保留海報裡的大小與前後，所以有大有小、有主角；後面再補一層淡淡的遠山與霧中針葉林。 */
-  const FH = 92, FB = -4, FW = FH * .8732;                       // 畫框高（vh）、底、寬
+  const FH = 84, FB = -3, FW = FH * .8732;                       // 畫框高（vh）、底、寬
   const frame = n => [[n, 0, FH, FB, 1, 'pb']];
   // 每朵菇在畫框裡的位置 [x 中心, 底, 高]（畫框高的比例）
   const PBM = { inocybe: [-0.1461, 0.4818, 0.1641], virosa: [-0.0451, 0.4844, 0.1747], gyromitra: [-0.2868, 0.4403, 0.2908], muscaria: [0.2369, 0.4276, 0.1823],
@@ -105,24 +105,25 @@
     const r = hero.getBoundingClientRect(), span = hero.offsetHeight - innerHeight;
     p = clamp(-r.top / span);
     sp += (p - sp) * (reduce ? 1 : .085);             // 捲動帶一點慣性，像慢慢走進去
+    const q = clamp(sp / .72);                        // 動畫在前 72% 走完，後段讓全景停留一下，不會一滑就到下一區
     mx += (tx - mx) * .05; my += (ty - my) * .05;
     drawRings(rings.map(R => {
-      const t = clamp((sp - R.start) / .55), e = easeIn(t) * .6 + ease(t) * .4;
+      const t = clamp((q - R.start) / .55), e = easeIn(t) * .6 + ease(t) * .4;
       return { z: R.base * (1 + e * 6.5), rot: e * R.rot, dx: -mx * 14 * (1.4 - R.base), dy: -my * 8,
         alpha: t > .92 ? 0 : t > .62 ? clamp(1 - (t - .62) / .3) : 1 };
     }));
-    const all = ease(clamp(sp / .95));
-    scene.style.transform = `scale(${(1.04 + all * .07).toFixed(4)})`;
-    lyrs.forEach(({ el, d }) => { el.style.transform = `translate3d(${(-mx * 26 * d).toFixed(1)}px, ${(-my * 10 * d + all * 46 * (d - .55)).toFixed(1)}px, 0) scale(${(1 + all * .08 * d).toFixed(4)})`; });
+    const all = ease(clamp(q / .95));
+    scene.style.transform = `scale(${(1.02 + all * .03).toFixed(4)})`;
+    lyrs.forEach(({ el, d }) => { el.style.transform = `translate3d(${(-mx * 26 * d).toFixed(1)}px, ${(-my * 10 * d + all * 46 * (d - .55)).toFixed(1)}px, 0) scale(${(1 + all * .04 * d).toFixed(4)})`; });
     logo.style.transform = `translate(-50%, calc(-50% + ${(all * 3).toFixed(2)}vh)) scale(${(1 - all * .08).toFixed(3)})`;
     hint.style.opacity = Math.max(0, 1 - sp * 6);
-    heroFade.style.opacity = clamp((sp - .84) / .16).toFixed(3);
-    const lvl = sp < .3 ? 0 : sp < .58 ? 1 : 2;
+    heroFade.style.opacity = clamp((sp - .9) / .1).toFixed(3);
+    const lvl = q < .3 ? 0 : q < .58 ? 1 : 2;
     depthLis.forEach((li, i) => li.classList.toggle('on', i === lvl));
-    depthEl.style.opacity = sp > .92 ? .3 : 1;
-    $('.rings').style.setProperty('--shade', (1 - clamp((sp - .55) / .35)).toFixed(3));
-    dapple.style.opacity = (.55 * (1 - clamp((sp - .5) / .4))).toFixed(3);
-    say.classList.toggle('on', sp > .86);
+    depthEl.style.opacity = q > .92 ? .3 : 1;
+    $('.rings').style.setProperty('--shade', (1 - clamp((q - .55) / .35)).toFixed(3));
+    dapple.style.opacity = (.55 * (1 - clamp((q - .5) / .4))).toFixed(3);
+    say.classList.toggle('on', q > .9);
     cxs += (tcx - cxs) * .12; cys += (tcy - cys) * .12;
     torch.style.transform = `translate(${cxs.toFixed(0)}px, ${cys.toFixed(0)}px)`;
   }
