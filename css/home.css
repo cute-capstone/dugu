@@ -859,3 +859,8 @@ body { background: var(--paper); color: var(--ink); }
 .pages-row { padding-bottom: 40px !important; margin-bottom: -30px; }
 /* 書頁區底部：和下一區（產品）顏色自然銜接，不留一條硬邊 */
 .books { background: linear-gradient(180deg, var(--paper) 0, var(--paper) calc(100% - 26vh), #e7dcca 100%); padding-bottom: max(10vh, 80px) !important; }
+
+/* 菇腳草叢（2026-11-28c）：在菇的按鈕裡、菇的前面，不跟著菇搖 */
+.lyr .mu img.tuft { position: absolute; left: 50%; bottom: 0; top: auto; height: auto; width: max(calc(var(--tw, 1.2) * 100%), 6vh); max-width: none;
+  transform: translate(-50%, 38%) scaleX(var(--tf, 1)); animation: none; filter: none; pointer-events: none; transition: none; will-change: auto; }
+.lyr .mu:hover img.tuft, .lyr .mu:focus-visible img.tuft { translate: none; scale: none; filter: none; }

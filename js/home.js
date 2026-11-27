@@ -80,6 +80,12 @@
   const FLEX = { psilocybe: 1.6, panaeolus: 1.7, leucocoprinus: 1.4, inocybe: 1.3, mutinus: 1.2, virosa: 1.2, cornu: .9, gyromitra: .45, omphalotus: .35 };
   $$('.lyr .mu').forEach(el => { const x = parseFloat(el.style.getPropertyValue('--x')) || 0;
     el.style.setProperty('--amp', (FLEX[el.dataset.mush] ?? 1).toFixed(2)); el.style.setProperty('--wl', (-(x + 120) * .045).toFixed(2) + 's'); });
+  // 菇腳藏進草叢：每朵菇底下補一叢海報裡的草（左右交錯翻、大小略變），菇是從草裡長出來，不是浮在地上
+  const TUFT = { gyromitra: 1, russula: .9, omphalotus: .95, gymnopilus: 1.1, cornu: .85, mutinus: .9, phallus: .8, muscaria: .9 };
+  $$('.lyr .mu').forEach((el, i) => { if (el.dataset.mush === 'weasel') return;
+    const t = document.createElement('img'); t.className = 'tuft'; t.src = S('b-tuft'); t.alt = ''; t.setAttribute('aria-hidden', 'true');
+    t.style.setProperty('--tw', ((TUFT[el.dataset.mush] ?? 1.25) * (.9 + (i * .37 % 1) * .25)).toFixed(2));
+    t.style.setProperty('--tf', i % 2 ? -1 : 1); el.appendChild(t); });
 
   const hero = $('.hero'), scene = $('#scene'), hint = $('#hint'), say = $('#say'), logo = $('#heroLogo'), torch = $('#torch'), heroFade = $('#heroFade');
   // 三層樹冠環：林緣（最暗、最先穿過）→ 林間 → 林床（最亮）

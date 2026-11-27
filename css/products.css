@@ -160,16 +160,19 @@
 .gc-scroll { height: 220px; margin: -26px -26px 24px; }
 @keyframes climb { from { transform: translateY(calc(-100% + 220px)); } to { transform: translateY(0); } }
 .gc-covers { position: relative; height: 220px; margin-bottom: 24px; }
-.gc-covers img { position: absolute; width: 58%; aspect-ratio: 1600 / 775; object-fit: cover; border-radius: 4px; background: #0b0908;
-  box-shadow: 0 14px 28px rgba(35, 27, 20, .28); transition: transform .7s var(--ease); }
-.gc-covers img:nth-child(1) { left: 0; top: 0; }
-.gc-covers img:nth-child(2) { left: 14%; top: 36px; }
-.gc-covers img:nth-child(3) { left: 28%; top: 72px; }
-.guide-card:hover .gc-covers img:nth-child(1) { transform: translate(-6px, -8px) rotate(-1.5deg); }
-.guide-card:hover .gc-covers img:nth-child(3) { transform: translate(8px, 6px) rotate(1.2deg); }
+.gc-covers .cv3 { position: absolute; width: 58%; aspect-ratio: 1600 / 775; border-radius: 5px; overflow: hidden; background: #060606;
+  box-shadow: 0 14px 28px rgba(35, 27, 20, .32); transition: transform .7s var(--ease); }
+.cv3-l { position: absolute; inset: 0; width: 100%; height: 100%; display: block; object-fit: cover; pointer-events: none; }
+.cv3-mush { filter: drop-shadow(0 2px 2px rgba(0, 0, 0, .85)) drop-shadow(0 5px 9px rgba(0, 0, 0, .5)); }
+.cv3-frame { scale: 1.025; filter: drop-shadow(0 3px 3px rgba(0, 0, 0, .9)) drop-shadow(0 8px 14px rgba(0, 0, 0, .55)); }
+.gc-covers .cv3:nth-child(1) { left: 0; top: 0; }
+.gc-covers .cv3:nth-child(2) { left: 14%; top: 36px; }
+.gc-covers .cv3:nth-child(3) { left: 28%; top: 72px; }
+.guide-card:hover .gc-covers .cv3:nth-child(1) { transform: translate(-6px, -8px) rotate(-1.5deg); }
+.guide-card:hover .gc-covers .cv3:nth-child(3) { transform: translate(8px, 6px) rotate(1.2deg); }
 @media (max-width: 900px) {
   .lamp-grid, .co-grid { grid-template-columns: 1fr; }
   .lamp-row { grid-template-columns: repeat(2, 1fr); }
   .co-list { grid-template-columns: repeat(2, minmax(0, 150px)); justify-content: space-around; }
-  .gc-covers { height: 180px; } .gc-covers img { width: 64%; } .gc-covers img:nth-child(2) { top: 28px; } .gc-covers img:nth-child(3) { top: 56px; left: 32%; }
+  .gc-covers { height: 180px; } .gc-covers .cv3 { width: 64%; } .gc-covers .cv3:nth-child(2) { top: 28px; } .gc-covers .cv3:nth-child(3) { top: 56px; left: 32%; }
 }
