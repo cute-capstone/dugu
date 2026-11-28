@@ -622,6 +622,38 @@
     const intro = CARD.has(m.id) ? info.intro.map(([x, y, d]) => [clamp(x, -25, 25), y, d]) : info.intro;
     setTimeout(() => { if (rot.m === m && !rot.auto && !rot.drag) tween(intro); }, kind === 'land' ? 650 : 1100);
   }
+  /* 3D 模型試作（2026-11-28）：A＝旋轉成形（_tools/lathe3d.py）、B＝AI 生成（TRELLIS 開源模型，_tools/hf3d/trellis.py）
+     模型是 js/models/<key>.js（glb 以 data URI 內嵌，直接開檔也讀得到）；model-viewer 從 Google CDN 載入，點了才載 */
+  const M3D = {
+    muscaria: { tag: 'A', how: '旋轉成形', note: '照組員手繪側面圖繞中軸轉成立體・底面貼本專題菌褶線稿' },
+    phallus: { tag: 'B', how: 'AI 生成', note: '用開源模型 TRELLIS 從組員手繪圖推算出立體・網狀菌裙是真的鏤空' },
+  };
+  const M3D_ORBIT = { front: '0deg 80deg 118%', side: '90deg 80deg 118%', back: '180deg 80deg 118%', top: '0deg 8deg 118%', under: '0deg 168deg 118%' };
+  const loadJS = src => new Promise((ok, no) => {
+    if (document.querySelector(`script[data-src="${src}"]`)) return ok();
+    const s = document.createElement('script'); s.src = src; s.dataset.src = src;
+    if (src.startsWith('https')) s.type = 'module';
+    s.onload = ok; s.onerror = no; document.head.appendChild(s);
+  });
+  async function toggle3D(btn) {
+    const st = btn.closest('.dw-stage'), m = rot.m, cfg = M3D[m.id];
+    if (st.classList.toggle('is-3d')) {
+      autoSpin(false); cancelAnimationFrame(rot.tw);
+      btn.textContent = '回到手繪轉盤';
+      if (!$('.st-m3d', st)) {
+        st.insertAdjacentHTML('beforeend', `<div class="st-m3d"><div class="m3d-wait">3D 模型載入中…</div><span class="m3d-label"><b>試作 ${cfg.tag}・${cfg.how}</b>${cfg.note}</span></div>`);
+        try {
+          await Promise.all([loadJS('https://ajax.googleapis.com/ajax/libs/model-viewer/4.0.0/model-viewer.min.js'), loadJS(`js/models/${m.id}.js?v=1`)]);
+          const box = $('.st-m3d', st); if (!box) return;
+          box.insertAdjacentHTML('afterbegin', `<model-viewer src="${window.DUGU_MODELS[m.id]}" alt="${m.name} 3D 模型（試作 ${cfg.tag}）" camera-controls auto-rotate rotation-per-second="24deg" auto-rotate-delay="2500" camera-orbit="${M3D_ORBIT.front}" interaction-prompt="none" shadow-intensity="0" exposure="${cfg.tag === 'B' ? 1.35 : 1}" environment-image="neutral" disable-zoom></model-viewer>`);
+          $('model-viewer', box).addEventListener('load', () => box.classList.add('ready'), { once: true });
+        } catch (err) { const w = $('.m3d-wait', st); if (w) w.textContent = '3D 模型需要網路才能載入'; }
+      }
+    } else {
+      btn.textContent = `3D 模型・試作 ${cfg.tag}`;
+    }
+    $$('[data-view]', drawer).forEach(b => b.classList.remove('on'));
+  }
   function turntable(m) {
     const g = (window.MUSH_GEOM || {})[m.id] || { capY: .42, capW: .82, capX: .5, ratio: .833 };
     const ratio = m.img ? g.ratio : .833;
@@ -668,7 +700,7 @@
           ${stamp}
           ${turntable(m)}
           <div class="st-sheen"></div>
-          <div class="st-switches">${m.plate ? `<button class="st-switch" data-plate="${m.plate}" data-plate-name="${m.name}">書頁圖解 P.${m.book.page}</button>` : ''}${m.card ? `<button class="st-switch" data-plate="${m.card}" data-plate-name="${m.name}" data-plate-kind="壓克力攜帶小卡">壓克力小卡</button>` : ''}</div>
+          <div class="st-switches">${m.plate ? `<button class="st-switch" data-plate="${m.plate}" data-plate-name="${m.name}">書頁圖解 P.${m.book.page}</button>` : ''}${m.card ? `<button class="st-switch" data-plate="${m.card}" data-plate-name="${m.name}" data-plate-kind="壓克力攜帶小卡">壓克力小卡</button>` : ''}${M3D[m.id] ? `<button class="st-switch m3d-btn" data-m3d>3D 模型・試作 ${M3D[m.id].tag}</button>` : ''}</div>
         </div>
         <div class="st-views" role="toolbar" aria-label="旋轉檢視">
           <button data-spin title="自動旋轉">⟳ 360°</button>
@@ -712,7 +744,7 @@
   addEventListener('keydown', e => { if (e.key === 'Escape' && !bookLb.hidden) { e.stopImmediatePropagation(); closeBook(); } }, true);
   // 展示台：滑鼠傾斜、拖曳旋轉、視角按鈕、切換書頁圖解
   drawer.addEventListener('pointermove', e => {
-    const st = e.target.closest('.dw-stage'); if (!st || reduce) return;
+    const st = e.target.closest('.dw-stage'); if (!st || reduce || st.classList.contains('is-3d')) return;
     if (rot.drag) {
       const d = rot.drag;
       rot.ry = d.ry + (e.clientX - d.x) * .6;
@@ -724,7 +756,7 @@
     st.style.setProperty('--ry', (((e.clientX - r.left) / r.width - .5) * 14).toFixed(2) + 'deg');
   });
   drawer.addEventListener('pointerdown', e => {
-    const f = e.target.closest('.dw-stage'); if (!f || e.target.closest('button')) return;
+    const f = e.target.closest('.dw-stage'); if (!f || e.target.closest('button') || f.classList.contains('is-3d')) return;
     autoSpin(false); cancelAnimationFrame(rot.tw);
     rot.drag = { x: e.clientX, y: e.clientY, rx: rot.rx, ry: rot.ry };
     f.classList.add('dragging'); f.setPointerCapture(e.pointerId);
@@ -739,6 +771,14 @@
   drawer.addEventListener('pointercancel', endDrag);
   drawer.addEventListener('pointerleave', () => { const st = $('.dw-stage', drawer); if (st) { st.style.setProperty('--rx', '0deg'); st.style.setProperty('--ry', '0deg'); } });
   drawer.addEventListener('click', e => {
+    if (e.target.closest('[data-m3d]')) { toggle3D(e.target.closest('[data-m3d]')); return; }
+    const mv = $('.dw-stage.is-3d model-viewer', drawer);
+    if (mv && e.target.closest('[data-view], [data-spin]')) {      // 3D 模式：視角鈕／旋轉鈕改控制模型
+      const v3 = e.target.closest('[data-view]');
+      if (v3) { if (v3.classList.contains('gill-3d')) $('.dw-scroll', drawer).scrollTo({ top: 0, behavior: reduce ? 'auto' : 'smooth' }); mv.autoRotate = false; mv.cameraOrbit = M3D_ORBIT[v3.dataset.view]; $$('[data-view]', drawer).forEach(b => b.classList.toggle('on', b.dataset.view === v3.dataset.view)); $('[data-spin]', drawer).classList.remove('on'); }
+      else { mv.autoRotate = !mv.autoRotate; $('[data-spin]', drawer).classList.toggle('on', mv.autoRotate); }
+      return;
+    }
     const v = e.target.closest('[data-view]');
     if (v) { if (v.classList.contains('gill-3d')) $('.dw-scroll', drawer).scrollTo({ top: 0, behavior: reduce ? 'auto' : 'smooth' }); setView(v.dataset.view); return; }
     if (e.target.closest('[data-spin]')) { autoSpin(!rot.auto); $$('[data-view]', drawer).forEach(b => b.classList.remove('on')); return; }
