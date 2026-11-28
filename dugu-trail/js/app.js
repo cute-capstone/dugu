@@ -624,10 +624,14 @@
   }
   /* 3D 模型試作（2026-11-28）：A＝旋轉成形（_tools/lathe3d.py）、B＝AI 生成（TRELLIS 開源模型，_tools/hf3d/trellis.py）
      模型是 js/models/<key>.js（glb 以 data URI 內嵌，直接開檔也讀得到）；model-viewer 從 Google CDN 載入，點了才載 */
-  const M3D = {
-    muscaria: { tag: 'A', how: '旋轉成形', note: '照組員手繪側面圖繞中軸轉成立體・底面貼本專題菌褶線稿' },
-    phallus: { tag: 'B', how: 'AI 生成', note: '用開源模型 TRELLIS 從組員手繪圖推算出立體・網狀菌裙是真的鏤空' },
+  const M3D_KIND = {
+    A: { how: '旋轉成形', note: '照組員手繪側面圖繞中軸轉成立體・底面貼本專題菌褶線稿' },
+    B: { how: 'AI 生成', note: '用開源模型 TRELLIS 從組員手繪圖推算出立體' },
   };
+  const M3D = {};   // 菇 id → 試作 A／B（js/models/<id>.js 要存在）；B 待做：conocybe nitidum psilocybe omphalotus gymnopilus cornu mutinus chloro panaeolus pantherina virosa gyromitra（TRELLIS 額度）
+  'muscaria phalloides inocybe verna leucocoprinus entoloma russula pulvero'.split(' ').forEach(k => M3D[k] = { tag: 'A', ...M3D_KIND.A });
+  'phallus'.split(' ').forEach(k => M3D[k] = { tag: 'B', ...M3D_KIND.B });
+  M3D.phallus.note += '・網狀菌裙是真的鏤空';
   const M3D_ORBIT = { front: '0deg 80deg 118%', side: '90deg 80deg 118%', back: '180deg 80deg 118%', top: '0deg 8deg 118%', under: '0deg 168deg 118%' };
   const loadJS = src => new Promise((ok, no) => {
     if (document.querySelector(`script[data-src="${src}"]`)) return ok();
