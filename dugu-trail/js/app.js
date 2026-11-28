@@ -17,7 +17,7 @@
 
   const WOOD = new Set(['muer', 'hypholoma', 'galerina', 'omphalotus']);
   const SPRITE = { gyromitra: { kind: 'brain', cap: '#9a5536', stem: '#efe2cf' }, muscaria: { kind: 'amanita', cap: '#d8232b', spot: '#fbf3ea', stem: '#f3eee6' } };
-  const ORDER = Object.values(MUSH).sort((a, b) => a.stage - b.stage);
+  const ORDER = Object.values(MUSH).filter(m => !m.ref).sort((a, b) => a.stage - b.stage);   // ref＝相似可食對照，只在菇卡裡出現
   const WX = { leaves: '落葉飄落', pollen: '花粉飛舞', spores: '孢子飄散', rain: '細雨', mist: '山嵐霧氣', fireflies: '夜間螢光', wind: '稜線強風', snow: '飄雪' };
   const found = new Set(store.get('dugu-found', []));
 
@@ -657,7 +657,7 @@
     autoSpin(false); cancelAnimationFrame(rot.tw);
     rot.rx = 0; rot.ry = 0; rot.m = m;
     drawer.style.setProperty('--c', m.color);
-    drawer.innerHTML = `<div class="dw-top"><span>讀菇山行 ／ The Poisonous Trail　·　No.${String(idx + 1).padStart(2, '0')}</span><button class="x" data-close aria-label="關閉">×</button></div>
+    drawer.innerHTML = `<div class="dw-top"><span>讀菇山行 ／ The Poisonous Trail　·　${idx < 0 ? '相似可食・對照' : 'No.' + String(idx + 1).padStart(2, '0')}</span><button class="x" data-close aria-label="關閉">×</button></div>
       <div class="dw-scroll">
         <div class="dw-stage mo-${mo}${m.glow ? ' glows' : ''}${m.tox >= 5 ? ' deadly' : ''}">
           <div class="st-rays"></div><div class="st-rings"><i></i><i></i><i></i></div><div class="st-halo"></div>
