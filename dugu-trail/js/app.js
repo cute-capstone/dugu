@@ -694,6 +694,9 @@
     if (!M3D[m.id] || !pref3D.on) return;
     setTimeout(() => { const b = $('[data-m3d]', drawer); if (b && rot.m === m && drawerOpen && !b.closest('.is-3d')) toggle3D(b, true); }, reduce ? 0 : 1400);
   }
+  // 卡片最下方已有「若有誤食請立即就醫／只觀察不採食」警語，症狀段落不再重複
+  const symptomText = t => t.replace(/只觀察，不採食，外觀圖解不能作為食用判斷依據。/g, '')
+    .replace(/[，,]?\s*若有誤食，請立即就醫。/g, '。').replace(/。+/g, '。').trim();
   function renderDrawer(m) {
     const st = STAGES[m.stage - 1], idx = ORDER.indexOf(m);
     const prev = ORDER[(idx - 1 + ORDER.length) % ORDER.length], next = ORDER[(idx + 1) % ORDER.length];
@@ -729,11 +732,11 @@
             <div><small>季節</small><b>${m.season}</b></div>
           </div>
           <div class="dw-sec" ${seq()}><h3>外觀</h3><p>${m.look}</p></div>
-          ${m.gill ? `<div class="dw-sec dw-gill" ${seq()}><h3>${m.gillKind || '菌褶'}線稿</h3><figure class="gill-fig"><img src="${m.gill.replace('.webp', '-light.webp')}" alt="${m.name}的${m.gillKind || '菌褶'}線稿" draggable="false"></figure><p class="gill-cap">本專題手繪・從菌傘下方往上看的${m.gillKind || '菌褶'}紋理${m.gillKind === '菌孔' ? '（牛肝菌類是一個個小孔，不是褶片）' : ''}　${CARD.has(m.id) ? '' : '<button class="gill-3d" data-view="under">在展示台上翻過來看 ↻</button>'}</p></div>` : ''}
+          ${m.gill ? `<div class="dw-sec dw-gill" ${seq()}><h3>${m.gillKind || '菌褶'}線稿</h3><figure class="gill-fig"><img src="${m.gill.replace('.webp', '-light.webp')}" alt="${m.name}的${m.gillKind || '菌褶'}線稿" draggable="false"></figure><p class="gill-cap">從菌傘下方往上看的${m.gillKind || '菌褶'}紋理${m.gillKind === '菌孔' ? '（牛肝菌類是一個個小孔，不是褶片）' : ''}　${CARD.has(m.id) ? '' : '<button class="gill-3d" data-view="under">在展示台上翻過來看 ↻</button>'}</p></div>` : ''}
           <div class="dw-sec" ${seq()}><h3>生長環境</h3><p>${m.habitat}</p></div>
           ${m.book ? `<div class="dw-sec dw-book" ${seq()}><h3>書頁解說</h3><p class="bk-lead">慢慢看，從菌傘到菌柄。</p><div class="bk-parts">${m.book.parts.map(([k, t]) => `<div><b>${k}</b><span>${t}</span></div>`).join('')}</div><button class="bk-open" data-plate="${m.plate}" data-plate-name="${m.name}">看整頁書頁 ↗</button></div>` : ''}
-          <div class="dw-sec" ${seq()}><h3>${safe ? '注意' : '中毒症狀'}</h3><p>${m.symptom}</p></div>
-          ${homes(m).length ? `<div class="dw-sec" ${seq()}><h3>牠的家</h3><div class="eco-rel">${homes(m).map(([k, e]) => `<button data-eco="${k}" style="--c:${CAT_C[CAT[e.tag]]}"><span class="lk eco-ic">${e.tag[0]}</span><span><b>${e.name}</b><em>${e.tag}・點我去看看</em></span></button>`).join('')}</div></div>` : ''}
+          <div class="dw-sec" ${seq()}><h3>${safe ? '注意' : '中毒症狀'}</h3><p>${symptomText(m.symptom)}</p></div>
+          ${homes(m).length ? `<div class="dw-sec" ${seq()}><h3>牠的家</h3><div class="eco-rel">${homes(m).map(([k, e]) => `<button data-eco="${k}" style="--c:${CAT_C[CAT[e.tag]]}"><span class="lk eco-ic">${e.tag[0]}</span><span><b>${e.name}</b><em>${e.tag}</em></span></button>`).join('')}</div></div>` : ''}
           ${m.book ? `<div class="dw-sec" ${seq()}><h3>慢慢看，菇菇相似卻不同</h3><div class="bk-like">${m.book.like.map(([n, t]) => { const o = byName(n); return o ? `<button data-open="${o.id}" style="--c:${o.color}"><span class="lk">${artOf(o)}</span><span><b>${n}</b><em>${t}</em></span></button>` : `<div><span class="lk bk-dot"></span><span><b>${n}</b><em>${t}</em></span></div>`; }).join('')}</div></div>` : ''}
           ${!m.book && m.like && m.like.length ? `<div class="dw-sec" ${seq()}><h3>慢慢看，菇菇相似卻不同</h3><div class="dw-like">${m.like.map(k => MUSH[k]).filter(Boolean).map(o => `<button data-open="${o.id}" style="--c:${o.color}"><span class="lk">${artOf(o)}</span>${o.name}</button>`).join('')}</div></div>` : ''}
           <div class="dw-warn" ${seq()}><svg viewBox="0 0 32 32" aria-hidden="true"><path d="M16 3 L30 28 H2Z" fill="none" stroke="#e8336f" stroke-width="2" stroke-linejoin="round"/><path d="M16 12v8" stroke="#e8336f" stroke-width="2.4" stroke-linecap="round"/><circle cx="16" cy="24" r="1.6" fill="#e8336f"/></svg>
