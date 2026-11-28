@@ -648,18 +648,18 @@
     if (!auto) pref3D.on = now3d;
     if (now3d) {
       autoSpin(false); cancelAnimationFrame(rot.tw);
-      btn.textContent = '回到手繪轉盤';
+      btn.textContent = '手繪';
       if (!$('.st-m3d', st)) {
-        st.insertAdjacentHTML('beforeend', `<div class="st-m3d"><div class="m3d-wait">3D 模型載入中…</div><span class="m3d-label"><b>試作 ${cfg.tag}・${cfg.how}</b>${cfg.note}</span></div>`);
+        st.insertAdjacentHTML('beforeend', `<div class="st-m3d"><div class="m3d-wait">3D 模型載入中…</div></div>`);
         try {
           await Promise.all([loadJS('https://ajax.googleapis.com/ajax/libs/model-viewer/4.0.0/model-viewer.min.js'), loadJS(`js/models/${m.id}.js?v=1`)]);
           const box = $('.st-m3d', st); if (!box) return;
-          box.insertAdjacentHTML('afterbegin', `<model-viewer src="${window.DUGU_MODELS[m.id]}" alt="${m.name} 3D 模型（試作 ${cfg.tag}）" camera-controls auto-rotate rotation-per-second="32deg" auto-rotate-delay="0" camera-orbit="${M3D_ORBIT.front}" interaction-prompt="none" shadow-intensity="0" exposure="${cfg.tag === 'B' ? 1.35 : 1}" environment-image="neutral" disable-zoom></model-viewer>`);
+          box.insertAdjacentHTML('afterbegin', `<model-viewer src="${window.DUGU_MODELS[m.id]}" alt="${m.name} 3D 模型" camera-controls auto-rotate rotation-per-second="32deg" auto-rotate-delay="0" camera-orbit="${M3D_ORBIT.front}" interaction-prompt="none" shadow-intensity="0" exposure="${cfg.tag === 'B' ? 1.35 : 1}" environment-image="neutral" disable-zoom></model-viewer>`);
           $('model-viewer', box).addEventListener('load', () => box.classList.add('ready'), { once: true });
         } catch (err) { const w = $('.m3d-wait', st); if (w) w.textContent = '3D 模型需要網路才能載入'; }
       }
     } else {
-      btn.textContent = `3D 模型・試作 ${cfg.tag}`;
+      btn.textContent = '3D 模型';
     }
     $$('[data-view]', drawer).forEach(b => b.classList.remove('on'));
     const mv = $('model-viewer', st); if (mv && now3d) mv.autoRotate = true;
@@ -709,18 +709,15 @@
         <div class="dw-stage mo-${mo}${m.glow ? ' glows' : ''}${m.tox >= 5 ? ' deadly' : ''}">
           <div class="st-rays"></div><div class="st-rings"><i></i><i></i><i></i></div><div class="st-halo"></div>
           <div class="st-motes fx-${info.fx}">${motes(info.fx)}</div>
-          <span class="st-tag tl">${fmt(st.from)}–${fmt(st.to)} m</span>
-          <span class="st-tag tr">${st.name}</span>
-          <span class="dw-badge${m.verified ? ' ok' : ''}">${m.verified ? '書頁資料' : '示意資料・待校正'}</span>
           ${stamp}
           ${turntable(m)}
           <div class="st-sheen"></div>
-          <div class="st-switches">${m.plate ? `<button class="st-switch" data-plate="${m.plate}" data-plate-name="${m.name}">書頁圖解 P.${m.book.page}</button>` : ''}${m.card ? `<button class="st-switch" data-plate="${m.card}" data-plate-name="${m.name}" data-plate-kind="壓克力攜帶小卡">壓克力小卡</button>` : ''}${M3D[m.id] ? `<button class="st-switch m3d-btn" data-m3d>3D 模型・試作 ${M3D[m.id].tag}</button>` : ''}</div>
+          <div class="st-switches">${m.card ? `<button class="st-switch" data-plate="${m.card}" data-plate-name="${m.name}" data-plate-kind="壓克力攜帶小卡">壓克力小卡</button>` : ''}${M3D[m.id] ? `<button class="st-switch m3d-btn" data-m3d>3D 模型</button>` : ''}</div>
         </div>
         <div class="st-views" role="toolbar" aria-label="旋轉檢視">
           <button data-spin title="自動旋轉">⟳ 360°</button>
           <button data-view="front" class="on">正面</button><button data-view="side">側面</button><button data-view="back">背面</button>${CARD.has(m.id) ? '' : `<button data-view="top">俯視</button><button data-view="under">${m.gillKind || (NO_GILLS.has(m.id) ? '底部' : '菌褶')}</button>`}
-          <span class="st-hint">拖曳旋轉 · ${info.label}</span>
+          <span class="st-hint">拖曳旋轉</span>
         </div>
         <div class="dw-body">
           <h2 class="dw-name${safe ? ' safe' : ''}" id="dwName" ${seq()}>${[...m.name].map((ch, i) => `<span style="--k:${i}">${ch}</span>`).join('')}</h2>
@@ -734,7 +731,7 @@
           <div class="dw-sec" ${seq()}><h3>外觀</h3><p>${m.look}</p></div>
           ${m.gill ? `<div class="dw-sec dw-gill" ${seq()}><h3>${m.gillKind || '菌褶'}線稿</h3><figure class="gill-fig"><img src="${m.gill.replace('.webp', '-light.webp')}" alt="${m.name}的${m.gillKind || '菌褶'}線稿" draggable="false"></figure><p class="gill-cap">本專題手繪・從菌傘下方往上看的${m.gillKind || '菌褶'}紋理${m.gillKind === '菌孔' ? '（牛肝菌類是一個個小孔，不是褶片）' : ''}　${CARD.has(m.id) ? '' : '<button class="gill-3d" data-view="under">在展示台上翻過來看 ↻</button>'}</p></div>` : ''}
           <div class="dw-sec" ${seq()}><h3>生長環境</h3><p>${m.habitat}</p></div>
-          ${m.book ? `<div class="dw-sec dw-book" ${seq()}><h3>書頁解說<small>讀菇山行 ・ P.${m.book.page}</small></h3><p class="bk-lead">慢慢看，從菌傘到菌柄。</p><div class="bk-parts">${m.book.parts.map(([k, t]) => `<div><b>${k}</b><span>${t}</span></div>`).join('')}</div><button class="bk-open" data-plate="${m.plate}" data-plate-name="${m.name}">看整頁書頁 ↗</button></div>` : ''}
+          ${m.book ? `<div class="dw-sec dw-book" ${seq()}><h3>書頁解說</h3><p class="bk-lead">慢慢看，從菌傘到菌柄。</p><div class="bk-parts">${m.book.parts.map(([k, t]) => `<div><b>${k}</b><span>${t}</span></div>`).join('')}</div><button class="bk-open" data-plate="${m.plate}" data-plate-name="${m.name}">看整頁書頁 ↗</button></div>` : ''}
           <div class="dw-sec" ${seq()}><h3>${safe ? '注意' : '中毒症狀'}</h3><p>${m.symptom}</p></div>
           ${homes(m).length ? `<div class="dw-sec" ${seq()}><h3>牠的家</h3><div class="eco-rel">${homes(m).map(([k, e]) => `<button data-eco="${k}" style="--c:${CAT_C[CAT[e.tag]]}"><span class="lk eco-ic">${e.tag[0]}</span><span><b>${e.name}</b><em>${e.tag}・點我去看看</em></span></button>`).join('')}</div></div>` : ''}
           ${m.book ? `<div class="dw-sec" ${seq()}><h3>慢慢看，菇菇相似卻不同</h3><div class="bk-like">${m.book.like.map(([n, t]) => { const o = byName(n); return o ? `<button data-open="${o.id}" style="--c:${o.color}"><span class="lk">${artOf(o)}</span><span><b>${n}</b><em>${t}</em></span></button>` : `<div><span class="lk bk-dot"></span><span><b>${n}</b><em>${t}</em></span></div>`; }).join('')}</div></div>` : ''}
