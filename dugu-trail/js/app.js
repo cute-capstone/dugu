@@ -459,7 +459,7 @@
     const m = MUSH[id]; if (!m) return;
     // 說明卡已開著（上一種／下一種／相似菇）：直接換內容，背景移到那一層
     if (drawerOpen && !opts.el) {
-      clearScene(); renderDrawer(m); markFound(m);
+      clearScene(); renderDrawer(m); auto3D(m); markFound(m);
       $('.dw-scroll', drawer).scrollTop = 0;
       enter('sprout');
       const inView = nearestEl(`[data-m="${id}"]`);
@@ -475,6 +475,7 @@
       return;
     }
     renderDrawer(m);
+    auto3D(m);
     drawer.hidden = false; drawerOpen = true;
     drawer.classList.add('on'); scrim.classList.add('on');
     if (el) { highlight(el, m); fly(el, m); } else enter('sprout');
@@ -639,9 +640,13 @@
     if (src.startsWith('https')) s.type = 'module';
     s.onload = ok; s.onerror = no; document.head.appendChild(s);
   });
-  async function toggle3D(btn) {
+  const pref3D = { get on() { try { return localStorage.getItem('dugu-3d') !== 'off'; } catch (e) { return true; } },
+                   set on(v) { try { localStorage.setItem('dugu-3d', v ? 'on' : 'off'); } catch (e) {} } };
+  async function toggle3D(btn, auto) {
     const st = btn.closest('.dw-stage'), m = rot.m, cfg = M3D[m.id];
-    if (st.classList.toggle('is-3d')) {
+    const now3d = st.classList.toggle('is-3d');
+    if (!auto) pref3D.on = now3d;
+    if (now3d) {
       autoSpin(false); cancelAnimationFrame(rot.tw);
       btn.textContent = '回到手繪轉盤';
       if (!$('.st-m3d', st)) {
@@ -649,7 +654,7 @@
         try {
           await Promise.all([loadJS('https://ajax.googleapis.com/ajax/libs/model-viewer/4.0.0/model-viewer.min.js'), loadJS(`js/models/${m.id}.js?v=1`)]);
           const box = $('.st-m3d', st); if (!box) return;
-          box.insertAdjacentHTML('afterbegin', `<model-viewer src="${window.DUGU_MODELS[m.id]}" alt="${m.name} 3D 模型（試作 ${cfg.tag}）" camera-controls auto-rotate rotation-per-second="24deg" auto-rotate-delay="2500" camera-orbit="${M3D_ORBIT.front}" interaction-prompt="none" shadow-intensity="0" exposure="${cfg.tag === 'B' ? 1.35 : 1}" environment-image="neutral" disable-zoom></model-viewer>`);
+          box.insertAdjacentHTML('afterbegin', `<model-viewer src="${window.DUGU_MODELS[m.id]}" alt="${m.name} 3D 模型（試作 ${cfg.tag}）" camera-controls auto-rotate rotation-per-second="32deg" auto-rotate-delay="0" camera-orbit="${M3D_ORBIT.front}" interaction-prompt="none" shadow-intensity="0" exposure="${cfg.tag === 'B' ? 1.35 : 1}" environment-image="neutral" disable-zoom></model-viewer>`);
           $('model-viewer', box).addEventListener('load', () => box.classList.add('ready'), { once: true });
         } catch (err) { const w = $('.m3d-wait', st); if (w) w.textContent = '3D 模型需要網路才能載入'; }
       }
@@ -657,6 +662,8 @@
       btn.textContent = `3D 模型・試作 ${cfg.tag}`;
     }
     $$('[data-view]', drawer).forEach(b => b.classList.remove('on'));
+    const mv = $('model-viewer', st); if (mv && now3d) mv.autoRotate = true;
+    const sp = $('[data-spin]', drawer); if (sp) sp.classList.toggle('on', now3d);
   }
   function turntable(m) {
     const g = (window.MUSH_GEOM || {})[m.id] || { capY: .42, capW: .82, capX: .5, ratio: .833 };
@@ -682,6 +689,10 @@
   function motes(fx) {
     const r = () => Math.random();
     return Array.from({ length: fx === 'flies' ? 7 : 20 }, (_, i) => `<i style="left:${(r() * 100).toFixed(0)}%;top:${(r() * 100).toFixed(0)}%;--d:${(fx === 'flies' ? 1.6 + r() * 1.4 : 3 + r() * 5).toFixed(1)}s;--dl:-${(r() * 8).toFixed(1)}s;--s:${(2 + r() * 4).toFixed(1)}px;--o:${(i * 360 / 7).toFixed(0)}deg"></i>`).join('');
+  }
+  function auto3D(m) {   // 有 3D 模型的菇：手繪飛入展示台後自動換成 3D 旋轉（使用者按回手繪轉盤後就不再自動）
+    if (!M3D[m.id] || !pref3D.on) return;
+    setTimeout(() => { const b = $('[data-m3d]', drawer); if (b && rot.m === m && drawerOpen && !b.closest('.is-3d')) toggle3D(b, true); }, reduce ? 0 : 1400);
   }
   function renderDrawer(m) {
     const st = STAGES[m.stage - 1], idx = ORDER.indexOf(m);
